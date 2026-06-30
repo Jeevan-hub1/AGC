@@ -108,6 +108,57 @@ function updateThreat(band){
   el.className='threat '+cls; $('#threatLvl').textContent=lbl;
 }
 
+/* ---------- onboarding product tour ---------- */
+const TOUR=[
+  {sel:'#kpiGrid', t:'Executive snapshot', d:'Live national energy indicators — resilience, Brent, supply shortfall, inflation & GDP risk — updated on every scenario.'},
+  {sel:'.neri-wrap', t:'Resilience Index (NERI)', d:'A single 0–100 early-warning score. Calm in green, it collapses toward CRITICAL as a shock propagates.'},
+  {sel:'.nav-item[data-page="scenario"]', t:'Inject a scenario', d:'Open the Scenario Simulator and inject a shock — 9 agents respond in under a second.', go:'scenario'},
+  {sel:'#demoBtn', t:'Guided demo', d:'Short on time? Run the full story hands-free — baseline → Hormuz shock → response → benchmark → Black Swan.', go:'executive'},
+  {sel:'#themeSeg', t:'Three themes', d:'Switch between Cool (tech), Executive (warm) and Command (dark) — perfect for any room.'},
+  {sel:'#threat', t:'Threat level', d:'A glanceable national threat posture, tied to the live NERI band.'},
+];
+let tourI=0;
+function ensureTourEls(){
+  if($('#tourHole'))return;
+  const hole=document.createElement('div');hole.id='tourHole';hole.className='tour-hole';
+  const pop=document.createElement('div');pop.id='tourPop';pop.className='tour-pop';
+  document.body.append(hole,pop);
+}
+function endTour(){ ['tourHole','tourPop'].forEach(id=>{const e=$('#'+id);if(e)e.remove();});
+  localStorage.setItem('phoenix-tour-done','1'); }
+function showStep(i){
+  const step=TOUR[i]; if(!step){endTour();return;}
+  if(step.go){const b=$(`.nav-item[data-page="${step.go}"]`); if(b)b.click();}
+  setTimeout(()=>{
+    const el=$(step.sel); if(!el){showStep(i+1);return;}
+    el.scrollIntoView({block:'center',behavior:'smooth'});
+    setTimeout(()=>{
+      const r=el.getBoundingClientRect(),pad=8;
+      const hole=$('#tourHole'),pop=$('#tourPop');
+      hole.style.cssText=`top:${r.top-pad}px;left:${r.left-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px`;
+      const below=r.bottom+260<innerHeight;
+      const top=below?r.bottom+14:Math.max(14,r.top-250);
+      let left=Math.min(Math.max(14,r.left),innerWidth-330);
+      pop.style.cssText=`top:${top}px;left:${left}px`;
+      pop.innerHTML=`<div class="tp-step">STEP ${i+1} / ${TOUR.length}</div>
+        <div class="tp-title">${step.t}</div><div class="tp-text">${step.d}</div>
+        <div class="tp-row"><button class="tp-skip" id="tpSkip">Skip tour</button>
+        <div style="display:flex;gap:8px">${i>0?'<button class="tp-back" id="tpBack">Back</button>':''}
+        <button class="tp-next" id="tpNext">${i===TOUR.length-1?'Finish':'Next →'}</button></div></div>`;
+      $('#tpSkip').onclick=endTour;
+      $('#tpNext').onclick=()=>showStep(i+1);
+      if($('#tpBack'))$('#tpBack').onclick=()=>showStep(i-1);
+    },420);
+  }, step.go?260:0);
+}
+function startTour(force){
+  if(!force && localStorage.getItem('phoenix-tour-done'))return;
+  $$('.nav-item').forEach(x=>x.classList.remove('active'));
+  const ex=$('.nav-item[data-page="executive"]'); if(ex){ex.classList.add('active');
+    $$('.page').forEach(p=>p.classList.toggle('active',p.dataset.page==='executive'));}
+  ensureTourEls(); showStep(0);
+}
+
 /* ---------- navigation ---------- */
 function setupNav(){
   $$('.nav-item').forEach(b=>b.onclick=()=>{
@@ -147,6 +198,7 @@ async function init(){
     $$('#themeSeg button').forEach(b=>b.onclick=()=>applyTheme(b.dataset.theme, true));
     const av=document.querySelector('.avatar'); if(av){av.title='Sign out';av.style.cursor='pointer';
       av.onclick=()=>{localStorage.removeItem('phoenix-auth');location.href='/login';};}
+    const hb=$('#helpBtn'); if(hb) hb.onclick=()=>startTour(true);
     loadTicker(); setInterval(loadTicker, 60000);
     bootStep('ACTIVATING 9-AGENT SWARM…');
     // default active scenario so every page has data
@@ -154,6 +206,7 @@ async function init(){
     botMsg("PHOENIX online. 9 agents on watch. Ask me what happens if a corridor closes, or inject a scenario from the simulator.");
     bootStep('GEOS CORE ONLINE');
     setTimeout(hideBoot, 500);
+    setTimeout(()=>startTour(), 1600);   // first-load product tour
   }catch(e){ console.error(e); $('#sysStatus').innerHTML='<span class="dot" style="background:var(--danger)"></span> BACKEND OFFLINE'; hideBoot(); }
 }
 

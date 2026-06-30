@@ -157,3 +157,23 @@ footer{padding:40px 0;color:var(--sub);font-size:13px;border-top:1px solid var(-
   .login-wrap{grid-template-columns:1fr}.login-brand{display:none}
 }
 @media(max-width:560px){.stats,.grid3,.steps{grid-template-columns:1fr}.hero h1{font-size:34px}.nav-links{display:none}}
+
+
+/* ============ CONTACT / REQUEST ACCESS ============ */
+.contact-card{background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:34px;box-shadow:var(--shadow);max-width:840px;margin:0 auto}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.contact-grid .field{margin-top:0}
+.contact-grid .full{grid-column:1/3}
+.field select,.field textarea{width:100%;margin-top:7px;padding:13px 15px;border-radius:12px;
+  border:1px solid var(--border);background:#fff;font-size:15px;outline:none;color:var(--ink);
+  font-family:inherit;transition:.2s}
+.field select:focus,.field textarea:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,150,199,.12)}
+.contact-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.muted-foot{color:var(--sub);font-size:13px}
+.req-ok{text-align:center;padding:24px}
+.req-ok .ok-badge{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;
+  font-size:30px;color:#fff;background:linear-gradient(135deg,var(--success),#00c97e);
+  box-shadow:0 10px 28px rgba(0,160,106,.4)}
+.req-ok h3{font-size:22px;font-weight:800} .req-ok p{color:var(--sub);margin:10px auto 20px;max-width:440px;line-height:1.6}
+@media(max-width:560px){.contact-grid{grid-template-columns:1fr}.contact-grid .full{grid-column:1}}

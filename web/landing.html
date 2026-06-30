@@ -23,6 +23,7 @@
       <a href="#how">How it works</a>
       <a href="#architecture">Architecture</a>
       <a href="#impact">Impact</a>
+      <a href="#contact">Request access</a>
     </div>
     <div class="nav-cta">
       <a class="btn btn-ghost" href="/login">Sign in</a>
@@ -97,6 +98,40 @@
     </div>
   </section>
 
+  <!-- CONTACT / REQUEST ACCESS -->
+  <section id="contact" class="wrap">
+    <div class="sec-head reveal"><div class="tag">Get access</div>
+      <h2>Request a briefing</h2>
+      <p>For ministries, refiners, and strategic-reserve authorities. Tell us your use case and we'll set up a tailored walkthrough of the GEOS command center.</p></div>
+    <div class="contact-card reveal">
+      <form id="reqForm" class="contact-grid">
+        <div class="field"><label for="cname">Full name</label><input id="cname" placeholder="Your name" required /></div>
+        <div class="field"><label for="corg">Organisation</label><input id="corg" placeholder="Ministry / Company" required /></div>
+        <div class="field"><label for="cemail">Work email</label><input id="cemail" type="email" placeholder="you@org.gov.in" required /></div>
+        <div class="field"><label for="crole">Role</label>
+          <select id="crole">
+            <option>Policy / Government</option>
+            <option>Refiner / Energy company</option>
+            <option>Strategic reserve authority</option>
+            <option>Analyst / Researcher</option>
+            <option>Other</option>
+          </select></div>
+        <div class="field full"><label for="cmsg">What would you like to achieve?</label>
+          <textarea id="cmsg" rows="3" placeholder="Briefly describe your use case…"></textarea></div>
+        <div class="full contact-actions">
+          <button type="submit" class="btn btn-primary btn-lg">Request access →</button>
+          <span class="muted-foot">We typically respond within 2 business days.</span>
+        </div>
+      </form>
+      <div id="reqOk" class="req-ok" hidden>
+        <div class="ok-badge">✓</div>
+        <h3>Thank you — request received.</h3>
+        <p>Our team will reach out to schedule your GEOS briefing. In the meantime, explore the live console.</p>
+        <a class="btn btn-primary" href="/login">Open the Command Center →</a>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="wrap">
     <div class="cta-band reveal">
@@ -127,6 +162,19 @@
     // scroll reveal
     const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.15});
     document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+    // request-access form (demo: client-side acknowledgement)
+    const rf=document.getElementById('reqForm');
+    if(rf) rf.addEventListener('submit',e=>{
+      e.preventDefault();
+      const em=document.getElementById('cemail').value.trim();
+      const nm=document.getElementById('cname').value.trim();
+      if(!em||!nm){alert('Please add your name and email.');return;}
+      try{const q=JSON.parse(localStorage.getItem('phoenix-requests')||'[]');
+        q.push({nm,em,org:document.getElementById('corg').value,role:document.getElementById('crole').value,t:Date.now()});
+        localStorage.setItem('phoenix-requests',JSON.stringify(q));}catch(_){}
+      rf.style.display='none';
+      const ok=document.getElementById('reqOk'); ok.hidden=false; ok.scrollIntoView({block:'center',behavior:'smooth'});
+    });
   </script>
 </body>
 </html>

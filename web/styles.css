@@ -594,3 +594,29 @@ body.exec .demo-toast{background:rgba(255,252,245,.97);border:1px solid rgba(184
   color:#2B2218;box-shadow:0 0 0 1px rgba(184,134,11,.15),0 18px 50px rgba(90,68,34,.2)}
 body.exec .demo-toast b{color:var(--primary)}
 body.exec .neri-val{text-shadow:0 0 22px rgba(31,111,139,.25)}
+
+
+/* ============ ONBOARDING TOUR ============ */
+.help-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);
+  background:rgba(255,255,255,.05);color:var(--text);cursor:pointer;font-weight:800;font-size:14px;transition:.2s}
+.help-btn:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px)}
+body.light .help-btn,body.exec .help-btn{background:rgba(15,23,42,.04)}
+.tour-hole{position:fixed;z-index:301;border-radius:12px;border:2px solid var(--primary);
+  box-shadow:0 0 0 9999px rgba(5,8,22,.74),0 0 24px rgba(0,229,255,.5);
+  transition:top .35s ease,left .35s ease,width .35s ease,height .35s ease;pointer-events:none}
+body.light .tour-hole,body.exec .tour-hole{box-shadow:0 0 0 9999px rgba(15,23,42,.55),0 0 24px rgba(0,150,199,.45)}
+.tour-pop{position:fixed;z-index:302;width:312px;background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,.5);animation:fade .3s ease}
+body.light .tour-pop,body.exec .tour-pop{background:#fff;box-shadow:0 24px 60px rgba(15,23,42,.25)}
+.tp-step{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--primary);font-weight:700}
+.tp-title{font-size:17px;font-weight:800;margin-top:6px}
+.tp-text{font-size:13.5px;color:var(--sub);line-height:1.6;margin-top:8px}
+.tp-row{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+.tp-skip{background:none;border:none;color:var(--sub);cursor:pointer;font-size:13px}
+.tp-skip:hover{color:var(--text)}
+.tp-back{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);
+  border-radius:9px;padding:8px 13px;cursor:pointer;font-size:13px}
+body.light .tp-back,body.exec .tp-back{background:rgba(15,23,42,.05)}
+.tp-next{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#001018;
+  border:none;border-radius:9px;padding:8px 15px;cursor:pointer;font-weight:700;font-size:13px}
+body.light .tp-next,body.exec .tp-next{color:#fff}
