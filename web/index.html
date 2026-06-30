@@ -80,6 +80,7 @@
       <button class="nav-item" data-page="copilot">🤖 AI Copilot</button>
       <button class="nav-item" data-page="blackswan">🦢 Black Swan Generator</button>
       <button class="nav-item" data-page="benchmark">🎯 Detection Benchmark</button>
+      <button class="nav-item" data-page="methodology">📐 Methodology</button>
       <div class="nav-foot">v0.2 · GEOS Core<br/>9 agents online</div>
     </nav>
 
@@ -238,6 +239,25 @@
           <div class="card"><div class="card-title">EXAMPLE EPISODE — why the baseline misses it</div>
             <canvas id="episodeChart"></canvas>
             <div id="episodeMeta" class="muted small"></div></div>
+        </div>
+      </section>
+
+      <!-- METHODOLOGY -->
+      <section class="page" data-page="methodology">
+        <div class="page-head"><h1>Methodology &amp; Assumptions</h1>
+          <p class="muted">Every baseline, coefficient and data source — explicit, auditable, testable</p></div>
+        <div class="banner" id="methIntro">All model parameters are documented and adjustable. Change a number, re-run, observe the effect — nothing is a black box.</div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">📊 NATIONAL BASELINES</div><table class="tbl" id="methBaselines"></table></div>
+          <div class="card"><div class="card-title">🧠 CAUSAL ELASTICITIES (Structural Causal Model)</div><table class="tbl" id="methCoeffs"></table></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">📈 NERI COMPONENT WEIGHTS</div><canvas id="methWeights"></canvas></div>
+          <div class="card"><div class="card-title">🔮 FOUNDATION MODEL &amp; SIMULATION</div><div id="methModel" class="causal"></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">🗄 DATA SOURCES</div><div id="methData"></div></div>
+          <div class="card"><div class="card-title">⚠ LIMITATIONS &amp; HONEST CAVEATS</div><ul id="methLimits" class="recs"></ul></div>
         </div>
       </section>
 

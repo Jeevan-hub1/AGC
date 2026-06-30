@@ -8,6 +8,8 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/response-%3C100ms-00E5FF)
 
+![PHOENIX Command Center](docs/preview.svg)
+
 > An **AI-native, autonomous decision-making platform** for India's energy
 > supply chain. PHOENIX fuses a World Energy Knowledge Graph, a Causal
 > Reasoning Engine, a Monte-Carlo war-gaming simulator and a swarm of
@@ -210,8 +212,15 @@ tests/              52 unit / integration / e2e tests
 
 Executive Command · Global Energy Map · Geopolitical Intel · Supply-Chain
 Digital Twin · **Scenario Simulator** · **Procurement Orchestrator** · Strategic
-Reserves · Economic Impact · **AI Copilot** · **Black Swan Generator** — all in
-a Bloomberg-Terminal / Mission-Control dark theme.
+Reserves · Economic Impact · **AI Copilot** · **Black Swan Generator** ·
+**Detection Benchmark** · **Methodology & Assumptions** — all in a
+Bloomberg-Terminal / Mission-Control theme with **3 switchable looks**
+(Cool / Executive / Command), a guided onboarding tour, and a marketing
+landing + login flow.
+
+> The image above is a representative render of the live command center. To
+> capture real screenshots, run the app, open `http://localhost:8000`, and grab
+> the Executive, Scenario and Benchmark pages.
 
 ---
 
@@ -225,6 +234,7 @@ a Bloomberg-Terminal / Mission-Control dark theme.
 | `GET` | `/api/worldmodel` | Geospatial + structural snapshot |
 | `GET` | `/api/graph/vulnerability` | Systemic single-points-of-failure |
 | `GET` | `/api/neri/baseline` | Baseline resilience score |
+| `GET` | `/api/methodology` | All baselines, coefficients, weights & sources |
 
 ---
 

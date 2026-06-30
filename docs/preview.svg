@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070B18"/><stop offset="100%" stop-color="#0B1020"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#6C63FF"/>
+    </linearGradient>
+    <linearGradient id="gaugeg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFB800"/><stop offset="100%" stop-color="#FF4D4D"/>
+    </linearGradient>
+    <filter id="g" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1280" height="760" fill="url(#bg)"/>
+  <rect width="1280" height="760" fill="url(#brand)" opacity="0.03"/>
+
+  <!-- TOP BAR -->
+  <rect x="0" y="0" width="1280" height="58" fill="#0B1020" opacity="0.9"/>
+  <line x1="0" y1="58" x2="1280" y2="58" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <rect x="22" y="13" width="32" height="32" rx="9" fill="url(#brand)"/>
+  <text x="38" y="35" text-anchor="middle" font-size="17" fill="#001018">◆</text>
+  <text x="66" y="27" font-size="14" font-weight="800" letter-spacing="2" fill="#fff">PROJECT <tspan fill="#00E5FF">PHOENIX</tspan></text>
+  <text x="66" y="43" font-size="10" fill="#94A3B8" letter-spacing=".5">National Energy Resilience Operating System</text>
+  <!-- ticker -->
+  <text x="470" y="34" font-size="12" fill="#94A3B8">BRENT <tspan fill="#fff" font-weight="700">$130</tspan> <tspan fill="#FF4D4D">▲59%</tspan>   WTI <tspan fill="#fff" font-weight="700">$126</tspan>   USD/INR <tspan fill="#fff" font-weight="700">₹83.4</tspan></text>
+  <rect x="900" y="16" width="120" height="26" rx="13" fill="#FFB800" opacity="0.12" stroke="#FFB800" stroke-opacity="0.5"/>
+  <circle cx="916" cy="29" r="4" fill="#FFB800" filter="url(#g)"/>
+  <text x="926" y="33" font-size="11" font-weight="700" fill="#FFB800">THREAT ELEVATED</text>
+  <rect x="1032" y="14" width="92" height="30" rx="9" fill="#00FF9C" opacity="0.10" stroke="#00FF9C" stroke-opacity="0.4"/>
+  <text x="1078" y="33" text-anchor="middle" font-size="11" font-weight="700" fill="#00FF9C">▶ RUN DEMO</text>
+  <text x="1180" y="33" font-size="12" fill="#00E5FF" font-family="monospace">14:32:08</text>
+  <!-- SIDEBAR -->
+  <rect x="0" y="58" width="208" height="702" fill="#0B1020" opacity="0.55"/>
+  <line x1="208" y1="58" x2="208" y2="760" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <g font-size="12.5" fill="#94A3B8">
+    <rect x="14" y="78" width="180" height="36" rx="9" fill="#00E5FF" opacity="0.14" stroke="#00E5FF" stroke-opacity="0.4"/>
+    <rect x="14" y="80" width="3" height="32" rx="2" fill="#00E5FF"/>
+    <text x="30" y="101" fill="#fff" font-weight="600">📊 Executive Command</text>
+    <text x="30" y="142">🌍 Global Energy Map</text>
+    <text x="30" y="176">🛰 Geopolitical Intel</text>
+    <text x="30" y="210">🕸 Supply Chain Twin</text>
+    <text x="30" y="244">⚡ Scenario Simulator</text>
+    <text x="30" y="278">🚢 Procurement</text>
+    <text x="30" y="312">🛢 Strategic Reserves</text>
+    <text x="30" y="346">📈 Economic Impact</text>
+    <text x="30" y="380">🤖 AI Copilot</text>
+    <text x="30" y="414">🦢 Black Swan Generator</text>
+    <text x="30" y="448">🎯 Detection Benchmark</text>
+    <text x="30" y="482">📐 Methodology</text>
+  </g>
+  <text x="22" y="730" font-size="10" fill="#5b6b85" font-family="monospace">v0.2 · GEOS Core · 9 agents online</text>
+  <!-- KPI CARDS -->
+  <g>
+    <rect x="228" y="78" width="180" height="92" rx="14" fill="#111928" opacity="0.85" stroke="#00E5FF" stroke-opacity="0.25"/>
+    <rect x="228" y="78" width="180" height="3" rx="2" fill="url(#brand)"/>
+    <text x="244" y="103" font-size="10" fill="#94A3B8" letter-spacing="1">NERI</text>
+    <text x="244" y="138" font-size="30" font-weight="800" fill="#00E5FF" font-family="monospace">41.2</text>
+    <text x="244" y="157" font-size="11" fill="#FF4D4D">-22.9 · WATCH</text>
+
+    <rect x="420" y="78" width="180" height="92" rx="14" fill="#111928" opacity="0.85" stroke="#FFFFFF" stroke-opacity="0.08"/>
+    <text x="436" y="103" font-size="10" fill="#94A3B8" letter-spacing="1">BRENT (USD/BBL)</text>
+    <text x="436" y="138" font-size="30" font-weight="800" fill="#fff" font-family="monospace">$130</text>
+    <text x="436" y="157" font-size="11" fill="#FF4D4D">+59%</text>
+
+    <rect x="612" y="78" width="180" height="92" rx="14" fill="#111928" opacity="0.85" stroke="#FFFFFF" stroke-opacity="0.08"/>
+    <text x="628" y="103" font-size="10" fill="#94A3B8" letter-spacing="1">SUPPLY SHORTFALL</text>
+    <text x="628" y="138" font-size="30" font-weight="800" fill="#fff" font-family="monospace">17.7%</text>
+    <text x="628" y="157" font-size="11" fill="#FFB800">effective</text>
+
+    <rect x="804" y="78" width="180" height="92" rx="14" fill="#111928" opacity="0.85" stroke="#FFFFFF" stroke-opacity="0.08"/>
+    <text x="820" y="103" font-size="10" fill="#94A3B8" letter-spacing="1">INFLATION Δ</text>
+    <text x="820" y="138" font-size="30" font-weight="800" fill="#fff" font-family="monospace">+1.13</text>
+    <text x="820" y="157" font-size="11" fill="#FF4D4D">pp CPI</text>
+
+    <rect x="996" y="78" width="262" height="92" rx="14" fill="#111928" opacity="0.85" stroke="#6C63FF" stroke-opacity="0.3"/>
+    <text x="1012" y="103" font-size="10" fill="#94A3B8" letter-spacing="1">DETECTION vs BASELINE</text>
+    <text x="1012" y="138" font-size="28" font-weight="800" fill="#00FF9C" font-family="monospace">↓95%</text>
+    <text x="1012" y="157" font-size="11" fill="#94A3B8">false-negative rate · +3.5d lead</text>
+  </g>
+  <!-- NERI GAUGE CARD -->
+  <rect x="228" y="186" width="360" height="260" rx="16" fill="#111928" opacity="0.85" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <text x="248" y="212" font-size="11" fill="#94A3B8" letter-spacing="1.5" font-weight="700">NATIONAL ENERGY RESILIENCE INDEX</text>
+  <path d="M 288 360 A 120 120 0 0 1 528 360" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="18" stroke-linecap="round"/>
+  <path d="M 288 360 A 120 120 0 0 1 432 252" fill="none" stroke="url(#gaugeg)" stroke-width="18" stroke-linecap="round" filter="url(#g)"/>
+  <text x="408" y="350" text-anchor="middle" font-size="52" font-weight="800" fill="#fff" font-family="monospace">41</text>
+  <text x="408" y="378" text-anchor="middle" font-size="13" font-weight="700" letter-spacing="2" fill="#FFB800">WATCH</text>
+  <text x="248" y="410" font-size="11" fill="#94A3B8">Weakest drivers: Price Stability · Demand Pressure ·</text>
+  <text x="248" y="428" font-size="11" fill="#94A3B8">Route Vulnerability</text>
+
+  <!-- AGENT FEED CARD -->
+  <rect x="604" y="186" width="654" height="260" rx="16" fill="#111928" opacity="0.85" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <text x="624" y="212" font-size="11" fill="#94A3B8" letter-spacing="1.5" font-weight="700">⬢ AGENT REASONING FEED</text>
+  <!-- feed rows -->
+  <g font-size="11.5">
+    <rect x="624" y="226" width="614" height="48" rx="9" fill="#FFFFFF" fill-opacity="0.03" stroke="#00E5FF" stroke-opacity="0.3"/>
+    <rect x="624" y="226" width="3" height="48" fill="#00E5FF"/>
+    <text x="640" y="246" fill="#00E5FF" font-weight="700">⬢ PREDICTIVE RISK</text>
+    <text x="1212" y="246" text-anchor="end" fill="#00FF9C" font-size="10">96%</text>
+    <text x="640" y="263" fill="#cbd5e1">Foundation model flags Hormuz at 97% disruption · ~2-day lead time</text>
+
+    <rect x="624" y="282" width="614" height="48" rx="9" fill="#FFFFFF" fill-opacity="0.03" stroke="#00E5FF" stroke-opacity="0.3"/>
+    <rect x="624" y="282" width="3" height="48" fill="#00E5FF"/>
+    <text x="640" y="302" fill="#00E5FF" font-weight="700">⬢ SCENARIO WAR-GAMER</text>
+    <text x="1212" y="302" text-anchor="end" fill="#00FF9C" font-size="10">90%</text>
+    <text x="640" y="319" fill="#cbd5e1">Simulated 5,000 futures · Brent p50 $130 (p95 $137) · recession signal 100%</text>
+
+    <rect x="624" y="338" width="614" height="48" rx="9" fill="#FFFFFF" fill-opacity="0.03" stroke="#00FF9C" stroke-opacity="0.4"/>
+    <rect x="624" y="338" width="3" height="48" fill="#00FF9C"/>
+    <text x="640" y="358" fill="#00FF9C" font-weight="700">⬢ PROCUREMENT ORCHESTRATOR</text>
+    <text x="1212" y="358" text-anchor="end" fill="#00FF9C" font-size="10">83%</text>
+    <text x="640" y="375" fill="#cbd5e1">4-source backfill plan covers 100% · Nash clearing price $157</text>
+
+    <rect x="624" y="394" width="614" height="40" rx="9" fill="#FFFFFF" fill-opacity="0.03" stroke="#FFB800" stroke-opacity="0.4"/>
+    <rect x="624" y="394" width="3" height="40" fill="#FFB800"/>
+    <text x="640" y="414" fill="#FFB800" font-weight="700">⬢ GENERATIVE POLICY</text>
+    <text x="640" y="429" fill="#cbd5e1">5 prioritised national actions generated · NERI band WATCH</text>
+  </g>
+  <text x="1238" y="466" text-anchor="end" font-size="10" fill="#5b6b85" font-family="monospace">Full national response in 74 ms</text>
+  <!-- PROCUREMENT CARD -->
+  <rect x="228" y="462" width="500" height="282" rx="16" fill="#111928" opacity="0.85" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <text x="248" y="488" font-size="11" fill="#94A3B8" letter-spacing="1.5" font-weight="700">AUTONOMOUS PROCUREMENT — RANKED BACKFILL</text>
+  <g font-size="11.5" fill="#cbd5e1">
+    <text x="248" y="516" fill="#5b6b85" font-size="10">#  SUPPLIER            BACKFILL   VOLUME     LEAD</text>
+    <line x1="248" y1="524" x2="708" y2="524" stroke="#FFFFFF" stroke-opacity="0.08"/>
+    <text x="248" y="546">1  Russia (ESPO)        +14.0%   0.71 mbpd   32d</text>
+    <text x="248" y="572">2  USA (WTI/Mars)       +10.5%   0.54 mbpd   40d</text>
+    <text x="248" y="598">3  Nigeria (Bonny)       +3.5%   0.18 mbpd   24d</text>
+    <text x="248" y="624">4  Brazil (Tupi)         +3.2%   0.16 mbpd   38d</text>
+  </g>
+  <rect x="248" y="648" width="460" height="74" rx="10" fill="#00E5FF" fill-opacity="0.06" stroke="#00E5FF" stroke-opacity="0.25"/>
+  <text x="266" y="674" font-size="12" fill="#fff" font-weight="700">Coverage 100% · est. daily premium $1.4M</text>
+  <text x="266" y="697" font-size="11" fill="#94A3B8">Cournot–Nash equilibrium · converged in 2 iterations</text>
+  <text x="266" y="714" font-size="11" fill="#94A3B8">DP-optimal SPR drawdown on standby</text>
+
+  <!-- MINI MAP -->
+  <rect x="744" y="462" width="514" height="282" rx="16" fill="#0A1326" opacity="0.9" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <text x="764" y="488" font-size="11" fill="#94A3B8" letter-spacing="1.5" font-weight="700">GLOBAL ENERGY MAP — LIVE RISK</text>
+  <!-- India hub -->
+  <circle cx="1010" cy="620" r="7" fill="#6C63FF" filter="url(#g)"/>
+  <text x="1010" y="645" text-anchor="middle" font-size="9" fill="#94A3B8">INDIA</text>
+  <!-- supplier nodes + flows -->
+  <g stroke-width="2" fill="none">
+    <line x1="900" y1="540" x2="1010" y2="620" stroke="#FF4D4D" stroke-dasharray="6 5"/>
+    <line x1="950" y1="700" x2="1010" y2="620" stroke="#FF4D4D" stroke-dasharray="6 5"/>
+    <line x1="820" y1="600" x2="1010" y2="620" stroke="#00E5FF" stroke-opacity="0.35"/>
+    <line x1="1130" y1="560" x2="1010" y2="620" stroke="#00E5FF" stroke-opacity="0.35"/>
+  </g>
+  <circle cx="900" cy="540" r="6" fill="#FF4D4D"/><text x="900" y="528" text-anchor="middle" font-size="8.5" fill="#FF4D4D">Gulf ⚠</text>
+  <circle cx="950" cy="700" r="5" fill="#FF4D4D"/>
+  <circle cx="820" cy="600" r="6" fill="#00E5FF"/><text x="820" y="588" text-anchor="middle" font-size="8.5" fill="#94A3B8">US</text>
+  <circle cx="1130" cy="560" r="5" fill="#00E5FF"/><text x="1130" y="548" text-anchor="middle" font-size="8.5" fill="#94A3B8">Russia</text>
+  <text x="764" y="724" font-size="10" fill="#5b6b85">⚠ Hormuz-routed flows disrupted · alternatives rerouting</text>
+</svg>

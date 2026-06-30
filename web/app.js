@@ -221,6 +221,7 @@ async function init(){
       av.onclick=()=>{localStorage.removeItem('phoenix-auth');location.href='/login';};}
     setupSettings();
     loadTicker(); setInterval(loadTicker, 60000);
+    loadMethodology();
     bootStep('ACTIVATING 9-AGENT SWARM…');
     // default active scenario so every page has data
     await runScenario('hormuz_partial');
@@ -595,6 +596,30 @@ async function runBenchmark(){
     const bf=ex.baseline_fire_day, pf=ex.phoenix_fire_day;
     $('#episodeMeta').innerHTML=`A <b>${ex.kind}</b> disruption. PHOENIX fired on day ${pf<0?'—':'D'+pf}; single-sensor baseline ${bf<0?'<b style="color:#FF4D4D">never detected it</b>':'fired on day D'+bf}. PHOENIX sees precursor signals (tension, naval build-up, incidents) before price moves.`;
   }
+}
+
+/* ---------- Methodology ---------- */
+async function loadMethodology(){
+  let m; try{ m=await api('/api/methodology'); }catch(e){ return; }
+  $('#methBaselines').innerHTML='<thead><tr><th>Parameter</th><th>Value</th><th>Source</th></tr></thead><tbody>'
+    +m.baselines.map(b=>`<tr><td>${b.k}</td><td class="mono" style="color:${C.primary};font-weight:700">${b.v}</td><td class="muted small">${b.src}</td></tr>`).join('')+'</tbody>';
+  $('#methCoeffs').innerHTML='<thead><tr><th>Coefficient</th><th>Value</th><th>Meaning</th></tr></thead><tbody>'
+    +m.causal_coefficients.map(c=>`<tr><td class="mono">${c.name}</td><td class="mono" style="color:${C.secondary};font-weight:700">${c.value}</td><td class="muted small">${c.desc}</td></tr>`).join('')+'</tbody>';
+  // NERI weights doughnut
+  if(state.charts.methW)state.charts.methW.destroy();
+  const cols=[C.primary,C.secondary,C.success,C.warning,C.danger,'#9b8cff','#28c0d6','#ff8a5c'];
+  state.charts.methW=new Chart($('#methWeights'),{type:'doughnut',
+    data:{labels:m.neri_weights.map(w=>w.name),datasets:[{data:m.neri_weights.map(w=>w.weight),backgroundColor:cols,borderWidth:0}]},
+    options:{plugins:{legend:{position:'right',labels:{color:C.sub,boxWidth:11,font:{size:10}}}},cutout:'55%'}});
+  const md=m.model, sim=m.simulation;
+  $('#methModel').innerHTML=[
+    ['Model',md.type],['Task',md.task],['Test AUC',md.test_auc],
+    ['Features',md.features.length+' signals'],['Monte-Carlo runs',sim.monte_carlo_runs],
+    ['Horizon',sim.horizon_days+' days'],['Random seed',sim.random_seed]
+  ].map(([k,v])=>`<div class="c"><div class="k">${k}</div><div class="v" style="font-size:16px">${v}</div></div>`).join('')
+   +`<div class="c" style="grid-column:1/3"><div class="k">Note</div><div class="muted small" style="margin-top:6px">${md.note}</div></div>`;
+  $('#methData').innerHTML=m.data_sources.map(d=>`<div class="vrow" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)"><b style="min-width:130px">${d.k}</b><span class="muted small">${d.v}</span></div>`).join('');
+  $('#methLimits').innerHTML=m.limitations.map(l=>`<li>↳ ${l}</li>`).join('');
 }
 
 /* ---------- Copilot ---------- */
