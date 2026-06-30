@@ -174,7 +174,34 @@
         localStorage.setItem('phoenix-requests',JSON.stringify(q));}catch(_){}
       rf.style.display='none';
       const ok=document.getElementById('reqOk'); ok.hidden=false; ok.scrollIntoView({block:'center',behavior:'smooth'});
+      confetti();
     });
+    // subtle confetti burst
+    function confetti(){
+      const cv=document.createElement('canvas');
+      cv.style.cssText='position:fixed;inset:0;z-index:90;pointer-events:none';
+      cv.width=innerWidth;cv.height=innerHeight;document.body.appendChild(cv);
+      const ctx=cv.getContext('2d');
+      const cols=['#0096C7','#5B5BD6','#00A06A','#B8860B','#E5484D'];
+      const N=110, parts=Array.from({length:N},()=>({
+        x:innerWidth/2+(Math.random()-.5)*140, y:innerHeight*0.42,
+        vx:(Math.random()-.5)*9, vy:Math.random()*-11-4,
+        s:5+Math.random()*6, c:cols[(Math.random()*cols.length)|0],
+        rot:Math.random()*6.28, vr:(Math.random()-.5)*0.4, life:0 }));
+      const t0=performance.now();
+      (function frame(t){
+        const el=(t-t0)/1700; ctx.clearRect(0,0,cv.width,cv.height);
+        let alive=false;
+        for(const p of parts){
+          p.life=el; p.vy+=0.34; p.x+=p.vx; p.y+=p.vy; p.vx*=0.99; p.rot+=p.vr;
+          const a=Math.max(0,1-el);
+          if(a>0 && p.y<innerHeight+40){alive=true;
+            ctx.save();ctx.globalAlpha=a;ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+            ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);ctx.restore();}
+        }
+        if(alive) requestAnimationFrame(frame); else cv.remove();
+      })(t0);
+    }
   </script>
 </body>
 </html>

@@ -159,6 +159,27 @@ function startTour(force){
   ensureTourEls(); showStep(0);
 }
 
+/* ---------- settings menu ---------- */
+function setupSettings(){
+  const btn=$('#settingsBtn'), menu=$('#settingsMenu'); if(!btn||!menu)return;
+  const close=()=>menu.hidden=true;
+  btn.onclick=e=>{e.stopPropagation(); menu.hidden=!menu.hidden;};
+  document.addEventListener('click',e=>{ if(!menu.hidden && !menu.contains(e.target) && e.target!==btn) close(); });
+  menu.querySelectorAll('button[data-act]').forEach(b=>b.onclick=()=>{
+    close();
+    const a=b.dataset.act;
+    if(a==='tour') startTour(true);
+    else if(a==='demo') runDemo();
+    else if(a==='signout'){ localStorage.removeItem('phoenix-auth'); location.href='/login'; }
+    else if(a==='reset'){
+      if(confirm('Reset all preferences (theme, tour, session)?')){
+        ['phoenix-theme','phoenix-tour-done','phoenix-auth'].forEach(k=>localStorage.removeItem(k));
+        location.href='/login';
+      }
+    }
+  });
+}
+
 /* ---------- navigation ---------- */
 function setupNav(){
   $$('.nav-item').forEach(b=>b.onclick=()=>{
@@ -198,7 +219,7 @@ async function init(){
     $$('#themeSeg button').forEach(b=>b.onclick=()=>applyTheme(b.dataset.theme, true));
     const av=document.querySelector('.avatar'); if(av){av.title='Sign out';av.style.cursor='pointer';
       av.onclick=()=>{localStorage.removeItem('phoenix-auth');location.href='/login';};}
-    const hb=$('#helpBtn'); if(hb) hb.onclick=()=>startTour(true);
+    setupSettings();
     loadTicker(); setInterval(loadTicker, 60000);
     bootStep('ACTIVATING 9-AGENT SWARM…');
     // default active scenario so every page has data

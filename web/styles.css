@@ -620,3 +620,19 @@ body.light .tp-back,body.exec .tp-back{background:rgba(15,23,42,.05)}
 .tp-next{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#001018;
   border:none;border-radius:9px;padding:8px 15px;cursor:pointer;font-weight:700;font-size:13px}
 body.light .tp-next,body.exec .tp-next{color:#fff}
+
+
+/* ============ SETTINGS MENU ============ */
+.settings-wrap{position:relative}
+.settings-menu{position:absolute;top:42px;right:0;width:230px;z-index:60;
+  background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:8px;
+  box-shadow:0 24px 60px rgba(0,0,0,.5);animation:fade .2s ease}
+body.light .settings-menu,body.exec .settings-menu{background:#fff;box-shadow:0 24px 60px rgba(15,23,42,.22)}
+.settings-menu .sm-head{font-size:10px;letter-spacing:1.5px;color:var(--sub);font-weight:700;padding:8px 10px 6px}
+.settings-menu button{width:100%;text-align:left;background:none;border:none;color:var(--text);
+  padding:10px 11px;border-radius:9px;cursor:pointer;font-size:13.5px;transition:.15s}
+.settings-menu button:hover{background:rgba(0,229,255,.10)}
+body.light .settings-menu button:hover{background:rgba(0,150,199,.08)}
+body.exec .settings-menu button:hover{background:rgba(184,134,11,.10)}
+.settings-menu .sm-sep{height:1px;background:var(--border);margin:6px 4px}
+.settings-menu .sm-foot{font-family:var(--mono);font-size:10px;color:var(--sub);padding:8px 11px 4px;letter-spacing:.5px}

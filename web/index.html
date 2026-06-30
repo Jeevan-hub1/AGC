@@ -41,7 +41,18 @@
       <div class="ticker" id="ticker"><span class="muted">loading market data…</span></div>
     </div>
     <div class="topbar-right">
-      <button id="helpBtn" class="help-btn" title="Product tour">?</button>
+      <div class="settings-wrap">
+        <button id="settingsBtn" class="help-btn" title="Settings">⚙</button>
+        <div id="settingsMenu" class="settings-menu" hidden>
+          <div class="sm-head">Settings</div>
+          <button data-act="tour">🧭 Replay product tour</button>
+          <button data-act="demo">▶ Run guided demo</button>
+          <button data-act="reset">↺ Reset preferences</button>
+          <div class="sm-sep"></div>
+          <button data-act="signout">⎋ Sign out</button>
+          <div class="sm-foot">GEOS · v0.2 · Project Phoenix</div>
+        </div>
+      </div>
       <div class="theme-seg" id="themeSeg">
         <button data-theme="light" title="Cool · Tech"><i style="background:#0096C7"></i></button>
         <button data-theme="exec" title="Executive · Warm"><i style="background:#B8860B"></i></button>
