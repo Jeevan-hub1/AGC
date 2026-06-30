@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
-<body>
+<body class="light">
   <!-- Animated background -->
   <canvas id="bgfx"></canvas>
   <div class="bg-grid"></div>
@@ -41,6 +41,7 @@
       <div class="ticker" id="ticker"><span class="muted">loading market data…</span></div>
     </div>
     <div class="topbar-right">
+      <button id="themeBtn" class="theme-btn" title="Toggle light / dark">🌙</button>
       <div class="threat" id="threat"><span class="t-dot"></span><span class="t-lbl">THREAT</span><b id="threatLvl">—</b></div>
       <button id="demoBtn" class="demo-btn">▶ RUN DEMO</button>
       <div class="sys-status" id="sysStatus"><span class="dot"></span> SYSTEM ONLINE</div>

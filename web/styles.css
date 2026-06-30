@@ -360,3 +360,123 @@ body{
 /* responsive: collapse rails on small screens */
 @media(max-width:1200px){.layout{grid-template-columns:210px 1fr}.rail{display:none}}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+
+/* ===================== LIGHT · ELEGANT THEME ===================== */
+.theme-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);
+  width:38px;height:34px;border-radius:10px;cursor:pointer;font-size:15px;transition:.2s}
+.theme-btn:hover{transform:translateY(-1px);border-color:var(--primary)}
+
+body.light{
+  --bg:#EEF2F9; --bg2:#FFFFFF; --card:rgba(255,255,255,.78);
+  --primary:#0096C7; --secondary:#5B5BD6; --success:#00A06A;
+  --warning:#C98A00; --danger:#E5484D; --text:#0B1220; --sub:#5A6B85;
+  --border:rgba(15,23,42,.09);
+  background:
+    radial-gradient(1100px 560px at 78% -12%,rgba(91,91,214,.14),transparent),
+    radial-gradient(900px 520px at -5% 108%,rgba(0,150,199,.12),transparent),
+    radial-gradient(700px 420px at 50% 50%,rgba(255,255,255,.6),transparent),
+    linear-gradient(180deg,#F4F7FC,#E9EEF6);
+}
+body.light #bgfx{opacity:.45}
+body.light .bg-grid{opacity:.5;
+  background-image:linear-gradient(rgba(11,18,32,.045) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(11,18,32,.045) 1px,transparent 1px)}
+
+/* boot splash light */
+body.light #boot{background:#F4F7FC}
+body.light .boot-sub{color:#5A6B85}
+
+/* topbar */
+body.light .topbar{background:rgba(255,255,255,.72);border-bottom:1px solid var(--border);
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 6px 24px rgba(15,23,42,.05)}
+body.light .brand-title{color:#0B1220}
+body.light .clock{color:var(--primary)}
+body.light .search{background:rgba(15,23,42,.04)}
+body.light .theme-btn{background:rgba(15,23,42,.04)}
+body.light .avatar{background:rgba(91,91,214,.12);border-color:var(--secondary);color:#3b39a8}
+
+/* sidebar */
+body.light .sidebar{background:rgba(255,255,255,.62);border-right:1px solid var(--border)}
+body.light .nav-item{color:#475569}
+body.light .nav-item:hover{background:rgba(15,23,42,.04);color:#0B1220}
+body.light .nav-item.active{color:#0B1220;
+  background:linear-gradient(90deg,rgba(0,150,199,.14),rgba(91,91,214,.08));
+  border-color:rgba(0,150,199,.35);box-shadow:0 4px 14px rgba(0,150,199,.12)}
+body.light .nav-foot{color:#64748B}
+
+/* cards & surfaces */
+body.light .card{background:rgba(255,255,255,.82);border:1px solid var(--border);
+  box-shadow:0 10px 30px rgba(15,23,42,.07),0 1px 0 rgba(255,255,255,.8) inset}
+body.light .card:hover{border-color:rgba(0,150,199,.3);
+  box-shadow:0 18px 44px rgba(15,23,42,.12)}
+body.light .card-title{color:#5A6B85}
+body.light .kpi{background:rgba(255,255,255,.86);border:1px solid var(--border);
+  box-shadow:0 8px 22px rgba(15,23,42,.06)}
+body.light .kpi::after{background:linear-gradient(120deg,transparent,rgba(0,150,199,.05))}
+body.light .kpi .value{color:#0B1220}
+body.light .kpi.accent .value{color:var(--primary)}
+
+/* headings */
+body.light .page-head h1{background:linear-gradient(90deg,#0B1220,#33507a);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* status / threat chips */
+body.light .sys-status{color:#0a7d57;background:rgba(0,160,106,.08);border-color:rgba(0,160,106,.3)}
+body.light .threat{background:rgba(255,255,255,.6)}
+
+/* inject chips */
+body.light .chip{background:rgba(255,255,255,.7);border:1px solid var(--border);color:#0B1220}
+body.light .chip:hover{border-color:var(--primary);box-shadow:0 4px 14px rgba(0,150,199,.15)}
+body.light .chip.active{background:linear-gradient(90deg,rgba(229,72,77,.14),rgba(201,138,0,.12));border-color:var(--danger)}
+
+/* causal cells / matrix / chain */
+body.light .causal .c,body.light .cellm,body.light .chain .node{background:rgba(15,23,42,.03);border:1px solid var(--border)}
+body.light .cellm .bar{background:rgba(15,23,42,.08)}
+body.light #vulnList .vbar{background:rgba(15,23,42,.08)}
+
+/* feed */
+body.light .feed .row{background:rgba(255,255,255,.7);border:1px solid var(--border);border-left:3px solid var(--primary)}
+body.light .feed .head{color:#0B1220}
+body.light .feed .row:hover{box-shadow:-4px 0 16px rgba(0,150,199,.12)}
+
+/* tables */
+body.light .tbl th{background:rgba(15,23,42,.04);color:#5A6B85}
+body.light .tbl td{border-top:1px solid var(--border)}
+body.light .tbl tr:hover td{background:rgba(0,150,199,.05)}
+body.light .rank{background:rgba(0,150,199,.14);color:#0078a3}
+
+/* banners */
+body.light .banner{background:linear-gradient(90deg,rgba(0,150,199,.10),rgba(91,91,214,.06));border-color:rgba(0,150,199,.3)}
+
+/* tanks */
+body.light .tank{background:rgba(255,255,255,.82);border:1px solid var(--border)}
+body.light .tank .glass{background:rgba(15,23,42,.03);border-color:var(--border)}
+
+/* chat */
+body.light .msg.bot{background:rgba(255,255,255,.85);border:1px solid var(--border)}
+body.light .msg.user{background:linear-gradient(135deg,var(--secondary),#4f4fc4);color:#fff}
+body.light .chat-input input{background:rgba(15,23,42,.04)}
+body.light .suggestions .s{border-color:rgba(0,150,199,.35)}
+
+/* ticker */
+body.light .ticker{background:rgba(255,255,255,.7);border:1px solid var(--border)}
+
+/* black swan picker */
+body.light .swan-opt{background:rgba(255,255,255,.7);border:1px solid var(--border)}
+body.light .swan-opt.sel{background:rgba(229,72,77,.1);border-color:var(--danger)}
+
+/* alerts rail */
+body.light .rail{background:rgba(255,255,255,.55);border-left:1px solid var(--border)}
+body.light .alerts .a{background:rgba(255,255,255,.75);border:1px solid var(--border);border-left:3px solid var(--warning)}
+
+/* scrollbars */
+body.light ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(0,150,199,.35),rgba(91,91,214,.35))}
+
+/* map frame softening */
+body.light .leaflet-container{background:#dfe7f1}
+
+/* demo toast light */
+body.light .demo-toast{background:rgba(255,255,255,.96);border:1px solid rgba(0,150,199,.4);
+  color:#0B1220;box-shadow:0 0 0 1px rgba(0,150,199,.15),0 18px 50px rgba(15,23,42,.18)}
+body.light .demo-toast b{color:var(--primary)}

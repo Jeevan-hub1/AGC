@@ -3,7 +3,38 @@
 const API = location.origin;
 const C = { primary:'#00E5FF', secondary:'#6C63FF', success:'#00FF9C',
             warning:'#FFB800', danger:'#FF4D4D', sub:'#94A3B8' };
-const state = { world:null, events:[], result:null, map:null, mapLayers:[], charts:{} };
+const state = { world:null, events:[], result:null, map:null, mapLayers:[], charts:{}, tile:null, theme:'light' };
+
+/* ---------- theme system (light + dark) ---------- */
+const PALETTE = {
+  dark:  { primary:'#00E5FF', secondary:'#6C63FF', success:'#00FF9C',
+           warning:'#FFB800', danger:'#FF4D4D', sub:'#94A3B8',
+           grid:'rgba(255,255,255,.07)',
+           tiles:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+           bgLine:'rgba(108,99,255,', bgDot:'rgba(0,229,255,.55)' },
+  light: { primary:'#0096C7', secondary:'#5B5BD6', success:'#00A06A',
+           warning:'#C98A00', danger:'#E5484D', sub:'#5A6B85',
+           grid:'rgba(15,23,42,.10)',
+           tiles:'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+           bgLine:'rgba(91,91,214,', bgDot:'rgba(0,150,199,.45)' },
+};
+function gridC(){ return PALETTE[state.theme].grid; }
+function applyTheme(t){
+  state.theme=t; localStorage.setItem('phoenix-theme',t);
+  document.body.classList.toggle('light', t==='light');
+  Object.assign(C, PALETTE[t]);   // recolor charts/markers
+  const tbtn=$('#themeBtn'); if(tbtn) tbtn.textContent = t==='light' ? '🌙' : '☀';
+  // swap map tiles
+  if(state.map && state.tile){
+    state.map.removeLayer(state.tile);
+    state.tile=L.tileLayer(PALETTE[t].tiles,{maxZoom:8}).addTo(state.map);
+    state.tile.bringToBack();
+  }
+  // re-render charts/panels with new palette
+  if(state.result){ try{ renderAll(state.result); }catch(e){} }
+}
+function toggleTheme(){ applyTheme(state.theme==='light'?'dark':'light'); }
+
 
 const $ = (s,el=document)=>el.querySelector(s);
 const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
@@ -31,11 +62,11 @@ function bgFX(){
       if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1;}
     for(let i=0;i<pts.length;i++){
       const a=pts[i];
-      ctx.beginPath();ctx.arc(a.x,a.y,1.4,0,7);ctx.fillStyle='rgba(0,229,255,.55)';ctx.fill();
+      ctx.beginPath();ctx.arc(a.x,a.y,1.4,0,7);ctx.fillStyle=PALETTE[state.theme].bgDot;ctx.fill();
       for(let j=i+1;j<pts.length;j++){
         const b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
         if(d<19000){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
-          ctx.strokeStyle='rgba(108,99,255,'+(0.16*(1-d/19000))+')';ctx.lineWidth=1;ctx.stroke();}
+          ctx.strokeStyle=PALETTE[state.theme].bgLine+(0.16*(1-d/19000))+')';ctx.lineWidth=1;ctx.stroke();}
       }
     }
     requestAnimationFrame(tick);
@@ -87,6 +118,7 @@ function bootStep(msg){ const el=$('#bootStatus'); if(el)el.textContent=msg; }
 function hideBoot(){ const b=$('#boot'); if(b){b.classList.add('hide'); setTimeout(()=>b.remove(),800);} }
 
 async function init(){
+  applyTheme(localStorage.getItem('phoenix-theme') || 'light');
   bgFX();
   setupNav(); clock(); setInterval(clock,1000);
   try{
@@ -101,6 +133,7 @@ async function init(){
     $('#swanRun').onclick=runBlackSwan;
     $('#demoBtn').onclick=runDemo;
     $('#benchRun').onclick=runBenchmark;
+    const tb=$('#themeBtn'); if(tb) tb.onclick=toggleTheme;
     loadTicker(); setInterval(loadTicker, 60000);
     bootStep('ACTIVATING 9-AGENT SWARM…');
     // default active scenario so every page has data
@@ -142,7 +175,7 @@ function drawNeriGauge(score,band){
   const ctx=$('#neriGauge'); if(state.charts.neri)state.charts.neri.destroy();
   const col={CRITICAL:C.danger,WATCH:C.warning,STABLE:C.primary,RESILIENT:C.success}[band]||C.primary;
   state.charts.neri=new Chart(ctx,{type:'doughnut',
-    data:{datasets:[{data:[score,100-score],backgroundColor:[col,'rgba(255,255,255,.06)'],
+    data:{datasets:[{data:[score,100-score],backgroundColor:[col,gridC()],
       borderWidth:0,circumference:180,rotation:270}]},
     options:{cutout:'78%',plugins:{legend:{display:false},tooltip:{enabled:false}},responsive:true,maintainAspectRatio:false}});
 }
@@ -152,8 +185,8 @@ function drawRadar(comp){
   state.charts.radar=new Chart(ctx,{type:'radar',
     data:{labels,datasets:[{label:'Resilience',data:Object.values(comp),
       backgroundColor:'rgba(0,229,255,.15)',borderColor:C.primary,pointBackgroundColor:C.primary}]},
-    options:{scales:{r:{min:0,max:100,grid:{color:'rgba(255,255,255,.08)'},
-      angleLines:{color:'rgba(255,255,255,.08)'},pointLabels:{color:C.sub,font:{size:10}},
+    options:{scales:{r:{min:0,max:100,grid:{color:gridC()},
+      angleLines:{color:gridC()},pointLabels:{color:C.sub,font:{size:10}},
       ticks:{display:false}}},plugins:{legend:{display:false}}}});
 }
 
@@ -161,7 +194,7 @@ function drawRadar(comp){
 function initMap(){
   const w=state.world;
   state.map=L.map('map',{zoomControl:true,attributionControl:false}).setView(w.center,3);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:8}).addTo(state.map);
+  state.tile=L.tileLayer(PALETTE[state.theme].tiles,{maxZoom:8}).addTo(state.map);
   drawMap();
 }
 function clearMapLayers(){ state.mapLayers.forEach(l=>state.map.removeLayer(l)); state.mapLayers=[]; }
@@ -200,6 +233,9 @@ async function runScenario(id){
   $('#agentFeed').innerHTML='<div class="muted"><span class="spin"></span> Orchestrating agent swarm…</div>';
   const r = await api('/api/scenario',{event_id:id,sim_runs:4000});
   state.result=r;
+  renderAll(r);
+}
+function renderAll(r){
   renderExecutive(r); renderCausal(r); renderDist(r); renderFeed(r);
   renderProcurement(r); renderReserves(r); renderEconomic(r);
   renderGeo(r); renderCascade(r); renderAlerts(r); renderRailRecs(r);
@@ -230,7 +266,7 @@ function renderDist(r){
   state.charts.dist=new Chart(ctx,{type:'bar',
     data:{labels:h.bins.map(b=>'$'+Math.round(b)),datasets:[{data:h.counts,backgroundColor:'rgba(0,229,255,.55)',borderRadius:3}]},
     options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:C.sub,maxTicksLimit:8},grid:{display:false}},
-      y:{ticks:{color:C.sub},grid:{color:'rgba(255,255,255,.06)'}}}}});
+      y:{ticks:{color:C.sub},grid:{color:gridC()}}}}});
   $('#distMeta').innerHTML=`${fmt(r.scenario.runs)} futures · p5 $${fmt(m.p5)} · p50 <b style="color:#fff">$${fmt(m.p50)}</b> · p95 $${fmt(m.p95)} · worst $${fmt(r.scenario.worst_case_brent)} · P(Brent&gt;$120)=${fmt(r.scenario.prob_brent_above_120*100)}%`;
 }
 function renderFeed(r){
@@ -276,7 +312,7 @@ function renderReserves(r){
         datasets:[{label:'Optimal release (mmbbl/day)',data:dp.optimal_release_schedule,
           borderColor:C.warning,backgroundColor:'rgba(255,184,0,.15)',fill:true,tension:.3,pointRadius:0}]},
       options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:C.sub,maxTicksLimit:10},grid:{display:false}},
-        y:{ticks:{color:C.sub},grid:{color:'rgba(255,255,255,.06)'}}}}});
+        y:{ticks:{color:C.sub},grid:{color:gridC()}}}}});
     $('#dpMeta').innerHTML=`Horizon ${dp.horizon_days}d · day-1 release <b style="color:#fff">${fmt(dp.schedule_summary.day1_release_mmbbl,2)}</b> mmbbl · total released ${fmt(dp.schedule_summary.total_released_mmbbl,1)} mmbbl · final reserve ${fmt(dp.final_reserve_mmbbl,1)} mmbbl · unmet gap ${fmt(dp.total_unmet_gap_mmbbl,2)} mmbbl`;
   } else {
     $('#dpMeta').innerHTML='<span class="muted">No drawdown required — procurement covers the shortfall. (DP engages when a residual gap exists, e.g. Black Swan.)</span>';
@@ -324,7 +360,7 @@ function renderCascade(r){
   state.charts.casc=new Chart(ctx,{type:'bar',
     data:{labels,datasets:[{data,backgroundColor:data.map(d=>d>50?C.danger:d>25?C.warning:C.primary),borderRadius:4}]},
     options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.x+'% feedstock at risk'}}},
-      scales:{x:{max:100,ticks:{color:C.sub},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:C.sub,font:{size:11}},grid:{display:false}}}}});
+      scales:{x:{max:100,ticks:{color:C.sub},grid:{color:gridC()}},y:{ticks:{color:C.sub,font:{size:11}},grid:{display:false}}}}});
 }
 
 /* ---------- Alerts / rail ---------- */
@@ -443,7 +479,7 @@ async function runBenchmark(){
       datasets:[{data:[b.baseline.fnr*100,b.phoenix.fnr*100],
         backgroundColor:[C.danger,C.success],borderRadius:6}]},
     options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y.toFixed(1)+'% false negatives'}}},
-      scales:{y:{max:100,ticks:{color:C.sub,callback:v=>v+'%'},grid:{color:'rgba(255,255,255,.06)'}},x:{ticks:{color:C.sub},grid:{display:false}}}}});
+      scales:{y:{max:100,ticks:{color:C.sub,callback:v=>v+'%'},grid:{color:gridC()}},x:{ticks:{color:C.sub},grid:{display:false}}}}});
 
   if(state.charts.lead)state.charts.lead.destroy();
   state.charts.lead=new Chart($('#leadChart'),{type:'bar',
@@ -451,7 +487,7 @@ async function runBenchmark(){
       datasets:[{data:[b.baseline.mean_lead_days,b.phoenix.mean_lead_days],
         backgroundColor:[C.sub,C.primary],borderRadius:6}]},
     options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.x.toFixed(1)+' days before onset'}}},
-      scales:{x:{ticks:{color:C.sub},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:C.sub},grid:{display:false}}}}});
+      scales:{x:{ticks:{color:C.sub},grid:{color:gridC()}},y:{ticks:{color:C.sub},grid:{display:false}}}}});
 
   const cm=(m,t)=>`<div class="cm"><h4>${t}</h4><div class="cm-grid">
     <div class="cm-cell tp"><div class="lbl">True Pos</div><div class="n">${m.confusion.tp}</div></div>
@@ -468,7 +504,7 @@ async function runBenchmark(){
         {label:'Price signal (z)',data:ex.price_z,borderColor:C.warning,tension:.3,pointRadius:0},
         {label:'PHOENIX fusion',data:ex.fusion.map(f=>f*4),borderColor:C.primary,tension:.3,pointRadius:0}]},
       options:{plugins:{legend:{labels:{color:C.sub,boxWidth:12}}},
-        scales:{x:{ticks:{color:C.sub},grid:{display:false}},y:{ticks:{color:C.sub},grid:{color:'rgba(255,255,255,.06)'}}}}});
+        scales:{x:{ticks:{color:C.sub},grid:{display:false}},y:{ticks:{color:C.sub},grid:{color:gridC()}}}}});
     const bf=ex.baseline_fire_day, pf=ex.phoenix_fire_day;
     $('#episodeMeta').innerHTML=`A <b>${ex.kind}</b> disruption. PHOENIX fired on day ${pf<0?'—':'D'+pf}; single-sensor baseline ${bf<0?'<b style="color:#FF4D4D">never detected it</b>':'fired on day D'+bf}. PHOENIX sees precursor signals (tension, naval build-up, incidents) before price moves.`;
   }
