@@ -231,14 +231,29 @@ def benchmark(episodes: int = 600) -> dict:
 
 
 # ------------------------------------------------------------------ #
-# Static command-center SPA
+# Static pages: landing (/), login (/login), command center (/app)
 # ------------------------------------------------------------------ #
+DOCS_DIR = WEB_DIR.parent / "docs"
+
 if WEB_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(WEB_DIR)), name="static")
 
     @app.get("/")
-    def index() -> FileResponse:
+    def landing() -> FileResponse:
+        return FileResponse(str(WEB_DIR / "landing.html"))
+
+    @app.get("/login")
+    def login() -> FileResponse:
+        return FileResponse(str(WEB_DIR / "login.html"))
+
+    @app.get("/app")
+    def console() -> FileResponse:
         return FileResponse(str(WEB_DIR / "index.html"))
+
+    @app.get("/architecture.svg")
+    def architecture() -> FileResponse:
+        return FileResponse(str(DOCS_DIR / "architecture.svg"),
+                            media_type="image/svg+xml")
 
 
 def main() -> None:  # pragma: no cover

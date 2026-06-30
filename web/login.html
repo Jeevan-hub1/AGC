@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in · Project Phoenix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/site.css" />
+</head>
+<body>
+  <div class="login-wrap">
+
+    <!-- Brand panel -->
+    <aside class="login-brand">
+      <a class="lb-top" href="/"><span class="brand"><span class="logo">◆</span></span> PROJECT&nbsp;PHOENIX</a>
+      <div class="lb-mid">
+        <h1>National Energy Resilience Operating System</h1>
+        <p>Sign in to the command center — predict disruptions, war-game futures, and orchestrate a national response in real time.</p>
+        <div class="lb-feats">
+          <div class="lb-feat"><span class="ck">✓</span> 9-agent autonomous decision swarm</div>
+          <div class="lb-feat"><span class="ck">✓</span> Live geopolitical & market signal fusion</div>
+          <div class="lb-feat"><span class="ck">✓</span> Explainable, auditable recommendations</div>
+        </div>
+        <div class="lb-stats">
+          <div><b>9</b><span>AI agents</span></div>
+          <div><b>&lt;100ms</b><span>response</span></div>
+          <div><b>↓95%</b><span>false negatives</span></div>
+        </div>
+      </div>
+      <div style="position:relative;z-index:1;color:#7e93b5;font-size:12px" class="mono">GEOS · v0.2 · secure session</div>
+    </aside>
+
+    <!-- Login form -->
+    <main class="login-panel">
+      <div class="login-card">
+        <h2>Welcome back</h2>
+        <div class="muted">Sign in to access the GEOS Command Center.</div>
+
+        <form id="loginForm" autocomplete="off">
+          <div class="field">
+            <label for="email">Work email</label>
+            <input id="email" type="email" placeholder="analyst@energy.gov.in" value="commander@geos.in" />
+          </div>
+          <div class="field">
+            <label for="pwd">Password</label>
+            <input id="pwd" type="password" placeholder="••••••••" value="phoenix" />
+          </div>
+          <div class="row-between">
+            <label style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" checked /> Remember me</label>
+            <a href="#" onclick="return false">Forgot password?</a>
+          </div>
+          <button class="btn btn-primary" type="submit">Sign in →</button>
+        </form>
+
+        <div class="divider">or</div>
+        <button class="btn btn-ghost demo-access" id="demoBtn">⚡ Continue with Demo Access</button>
+
+        <div class="secure">🔒 Demo environment — no real credentials are stored.</div>
+        <div class="login-foot">New here? <a href="/">Back to overview</a></div>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    function enter(){ localStorage.setItem('phoenix-auth','1'); location.href='/app'; }
+    document.getElementById('loginForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const em=document.getElementById('email').value.trim();
+      const pw=document.getElementById('pwd').value.trim();
+      if(!em||!pw){ alert('Please enter your email and password.'); return; }
+      enter();
+    });
+    document.getElementById('demoBtn').onclick=enter;
+  </script>
+</body>
+</html>

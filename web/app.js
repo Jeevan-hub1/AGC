@@ -128,6 +128,7 @@ function bootStep(msg){ const el=$('#bootStatus'); if(el)el.textContent=msg; }
 function hideBoot(){ const b=$('#boot'); if(b){b.classList.add('hide'); setTimeout(()=>b.remove(),800);} }
 
 async function init(){
+  if(!localStorage.getItem('phoenix-auth')){ location.replace('/login'); return; }
   applyTheme(localStorage.getItem('phoenix-theme') || 'light');
   bgFX();
   setupNav(); clock(); setInterval(clock,1000);
@@ -144,6 +145,8 @@ async function init(){
     $('#demoBtn').onclick=runDemo;
     $('#benchRun').onclick=runBenchmark;
     $$('#themeSeg button').forEach(b=>b.onclick=()=>applyTheme(b.dataset.theme, true));
+    const av=document.querySelector('.avatar'); if(av){av.title='Sign out';av.style.cursor='pointer';
+      av.onclick=()=>{localStorage.removeItem('phoenix-auth');location.href='/login';};}
     loadTicker(); setInterval(loadTicker, 60000);
     bootStep('ACTIVATING 9-AGENT SWARM…');
     // default active scenario so every page has data

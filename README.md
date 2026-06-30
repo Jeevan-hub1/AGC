@@ -158,7 +158,8 @@ pip install -r requirements.txt
 
 # 2. launch the command center
 uvicorn geos.api.server:app --reload
-#   → open http://localhost:8000
+#   → http://localhost:8000  (landing page)
+#   → /login  (sign in · or "Demo Access")  →  /app  (command center)
 
 # 3. or run a scenario from the terminal
 python -m geos.cli hormuz_partial
