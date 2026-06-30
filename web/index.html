@@ -41,7 +41,11 @@
       <div class="ticker" id="ticker"><span class="muted">loading market data…</span></div>
     </div>
     <div class="topbar-right">
-      <button id="themeBtn" class="theme-btn" title="Toggle light / dark">🌙</button>
+      <div class="theme-seg" id="themeSeg">
+        <button data-theme="light" title="Cool · Tech"><i style="background:#0096C7"></i></button>
+        <button data-theme="exec" title="Executive · Warm"><i style="background:#B8860B"></i></button>
+        <button data-theme="dark" title="Command · Dark"><i style="background:#6C63FF"></i></button>
+      </div>
       <div class="threat" id="threat"><span class="t-dot"></span><span class="t-lbl">THREAT</span><b id="threatLvl">—</b></div>
       <button id="demoBtn" class="demo-btn">▶ RUN DEMO</button>
       <div class="sys-status" id="sysStatus"><span class="dot"></span> SYSTEM ONLINE</div>

@@ -5,7 +5,7 @@ const C = { primary:'#00E5FF', secondary:'#6C63FF', success:'#00FF9C',
             warning:'#FFB800', danger:'#FF4D4D', sub:'#94A3B8' };
 const state = { world:null, events:[], result:null, map:null, mapLayers:[], charts:{}, tile:null, theme:'light' };
 
-/* ---------- theme system (light + dark) ---------- */
+/* ---------- theme system (dark · light/cool · executive/warm) ---------- */
 const PALETTE = {
   dark:  { primary:'#00E5FF', secondary:'#6C63FF', success:'#00FF9C',
            warning:'#FFB800', danger:'#FF4D4D', sub:'#94A3B8',
@@ -17,23 +17,33 @@ const PALETTE = {
            grid:'rgba(15,23,42,.10)',
            tiles:'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
            bgLine:'rgba(91,91,214,', bgDot:'rgba(0,150,199,.45)' },
+  exec:  { primary:'#1F6F8B', secondary:'#B8860B', success:'#2E7D5B',
+           warning:'#BD7A1E', danger:'#B23A34', sub:'#7A6E5B',
+           grid:'rgba(80,60,30,.12)',
+           tiles:'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+           bgLine:'rgba(184,134,11,', bgDot:'rgba(31,111,139,.42)' },
 };
 function gridC(){ return PALETTE[state.theme].grid; }
-function applyTheme(t){
+function applyTheme(t, animate){
+  if(!PALETTE[t]) t='light';
+  // crossfade overlay
+  if(animate){
+    let wipe=$('#themeWipe');
+    if(!wipe){wipe=document.createElement('div');wipe.id='themeWipe';wipe.className='theme-wipe';document.body.appendChild(wipe);}
+    wipe.classList.remove('go'); void wipe.offsetWidth; wipe.classList.add('go');
+  }
   state.theme=t; localStorage.setItem('phoenix-theme',t);
-  document.body.classList.toggle('light', t==='light');
+  document.body.classList.remove('light','exec');
+  if(t!=='dark') document.body.classList.add(t);
   Object.assign(C, PALETTE[t]);   // recolor charts/markers
-  const tbtn=$('#themeBtn'); if(tbtn) tbtn.textContent = t==='light' ? '🌙' : '☀';
-  // swap map tiles
+  $$('#themeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.theme===t));
   if(state.map && state.tile){
     state.map.removeLayer(state.tile);
     state.tile=L.tileLayer(PALETTE[t].tiles,{maxZoom:8}).addTo(state.map);
     state.tile.bringToBack();
   }
-  // re-render charts/panels with new palette
   if(state.result){ try{ renderAll(state.result); }catch(e){} }
 }
-function toggleTheme(){ applyTheme(state.theme==='light'?'dark':'light'); }
 
 
 const $ = (s,el=document)=>el.querySelector(s);
@@ -133,7 +143,7 @@ async function init(){
     $('#swanRun').onclick=runBlackSwan;
     $('#demoBtn').onclick=runDemo;
     $('#benchRun').onclick=runBenchmark;
-    const tb=$('#themeBtn'); if(tb) tb.onclick=toggleTheme;
+    $$('#themeSeg button').forEach(b=>b.onclick=()=>applyTheme(b.dataset.theme, true));
     loadTicker(); setInterval(loadTicker, 60000);
     bootStep('ACTIVATING 9-AGENT SWARM…');
     // default active scenario so every page has data

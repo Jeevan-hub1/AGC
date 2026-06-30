@@ -362,10 +362,27 @@ body{
 @media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
 
 
-/* ===================== LIGHT · ELEGANT THEME ===================== */
-.theme-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);
-  width:38px;height:34px;border-radius:10px;cursor:pointer;font-size:15px;transition:.2s}
-.theme-btn:hover{transform:translateY(-1px);border-color:var(--primary)}
+/* ===================== THEME SWITCHER + TRANSITIONS ===================== */
+.theme-seg{display:flex;gap:4px;background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:20px;padding:4px}
+.theme-seg button{width:26px;height:26px;border-radius:50%;border:none;cursor:pointer;
+  background:transparent;display:grid;place-items:center;transition:.2s}
+.theme-seg button i{width:13px;height:13px;border-radius:50%;display:block;
+  box-shadow:0 0 0 2px transparent;transition:.2s}
+.theme-seg button:hover{transform:translateY(-1px)}
+.theme-seg button.active{background:rgba(255,255,255,.10)}
+.theme-seg button.active i{box-shadow:0 0 0 2px currentColor,0 0 12px currentColor}
+
+/* smooth color transitions across the whole UI */
+body,.topbar,.sidebar,.rail,.card,.kpi,.chip,.feed .row,.ticker,.tbl th,
+.banner,.cellm,.tank,.msg,.swan-opt,.nav-item,.causal .c,.chain .node,.threat,.sys-status{
+  transition:background-color .55s ease,color .45s ease,border-color .45s ease,box-shadow .45s ease;
+}
+/* crossfade wipe overlay */
+.theme-wipe{position:fixed;inset:0;z-index:150;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 100% 0%,rgba(255,255,255,.55),rgba(120,140,200,.18) 40%,transparent 70%)}
+.theme-wipe.go{animation:wipe .6s ease}
+@keyframes wipe{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
 
 body.light{
   --bg:#EEF2F9; --bg2:#FFFFFF; --card:rgba(255,255,255,.78);
@@ -480,3 +497,100 @@ body.light .leaflet-container{background:#dfe7f1}
 body.light .demo-toast{background:rgba(255,255,255,.96);border:1px solid rgba(0,150,199,.4);
   color:#0B1220;box-shadow:0 0 0 1px rgba(0,150,199,.15),0 18px 50px rgba(15,23,42,.18)}
 body.light .demo-toast b{color:var(--primary)}
+
+
+/* ===================== EXECUTIVE · WARM THEME ===================== */
+body.exec{
+  --bg:#F3ECDD; --bg2:#FFFDF8; --card:rgba(255,252,245,.80);
+  --primary:#1F6F8B; --secondary:#B8860B; --success:#2E7D5B;
+  --warning:#BD7A1E; --danger:#B23A34; --text:#2B2218; --sub:#7A6E5B;
+  --border:rgba(90,68,34,.14);
+  background:
+    radial-gradient(1100px 560px at 80% -12%,rgba(184,134,11,.16),transparent),
+    radial-gradient(900px 520px at -6% 110%,rgba(31,111,139,.12),transparent),
+    radial-gradient(700px 420px at 50% 45%,rgba(255,253,246,.7),transparent),
+    linear-gradient(180deg,#FBF6EA,#EFE6D2);
+}
+body.exec #bgfx{opacity:.4}
+body.exec .bg-grid{opacity:.5;
+  background-image:linear-gradient(rgba(90,68,34,.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(90,68,34,.05) 1px,transparent 1px)}
+body.exec #boot{background:#F7F1E4}
+body.exec .boot-sub{color:#7A6E5B}
+
+/* topbar */
+body.exec .topbar{background:rgba(253,249,240,.74);border-bottom:1px solid var(--border);
+  box-shadow:0 6px 24px rgba(90,68,34,.07)}
+body.exec .brand-title{color:#2B2218}
+body.exec .clock{color:var(--primary)}
+body.exec .theme-seg{background:rgba(90,68,34,.05)}
+body.exec .avatar{background:rgba(184,134,11,.16);border-color:var(--secondary);color:#8a6608}
+
+/* sidebar */
+body.exec .sidebar{background:rgba(253,249,240,.62);border-right:1px solid var(--border)}
+body.exec .nav-item{color:#6b5f49}
+body.exec .nav-item:hover{background:rgba(90,68,34,.05);color:#2B2218}
+body.exec .nav-item.active{color:#2B2218;
+  background:linear-gradient(90deg,rgba(184,134,11,.16),rgba(31,111,139,.08));
+  border-color:rgba(184,134,11,.4);box-shadow:0 4px 14px rgba(184,134,11,.14)}
+body.exec .nav-item.active::before{background:linear-gradient(180deg,var(--secondary),var(--primary))}
+body.exec .nav-foot{color:#8a7d63}
+
+/* cards & surfaces */
+body.exec .card{background:rgba(255,252,245,.86);border:1px solid var(--border);
+  box-shadow:0 10px 30px rgba(90,68,34,.10),0 1px 0 rgba(255,255,255,.7) inset}
+body.exec .card:hover{border-color:rgba(184,134,11,.35);box-shadow:0 18px 44px rgba(90,68,34,.16)}
+body.exec .card::before{background:linear-gradient(90deg,transparent,rgba(184,134,11,.6),rgba(31,111,139,.5),transparent)}
+body.exec .card-title{color:#7A6E5B}
+body.exec .kpi{background:rgba(255,252,245,.9);border:1px solid var(--border);
+  box-shadow:0 8px 22px rgba(90,68,34,.08)}
+body.exec .kpi::before{background:linear-gradient(90deg,var(--secondary),var(--primary))}
+body.exec .kpi .value{color:#2B2218}
+body.exec .kpi.accent .value{color:var(--primary)}
+
+/* headings */
+body.exec .page-head h1{background:linear-gradient(90deg,#2B2218,#6b4f1e);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+body.exec .page-head::before{background:linear-gradient(180deg,var(--secondary),var(--primary))}
+
+/* status / chips */
+body.exec .sys-status{color:#1d6b4c;background:rgba(46,125,91,.10);border-color:rgba(46,125,91,.3)}
+body.exec .threat{background:rgba(255,252,245,.65)}
+body.exec .chip{background:rgba(255,252,245,.72);border:1px solid var(--border);color:#2B2218}
+body.exec .chip:hover{border-color:var(--secondary);box-shadow:0 4px 14px rgba(184,134,11,.16)}
+body.exec .chip.active{background:linear-gradient(90deg,rgba(178,58,52,.14),rgba(189,122,30,.14));border-color:var(--danger)}
+
+/* panels */
+body.exec .causal .c,body.exec .cellm,body.exec .chain .node{background:rgba(90,68,34,.04);border:1px solid var(--border)}
+body.exec .cellm .bar,body.exec #vulnList .vbar{background:rgba(90,68,34,.09)}
+body.exec .feed .row{background:rgba(255,252,245,.74);border:1px solid var(--border);border-left:3px solid var(--primary)}
+body.exec .feed .head{color:#2B2218}
+body.exec .feed .row:hover{box-shadow:-4px 0 16px rgba(31,111,139,.12)}
+
+/* tables */
+body.exec .tbl th{background:rgba(90,68,34,.05);color:#7A6E5B}
+body.exec .tbl td{border-top:1px solid var(--border)}
+body.exec .tbl tr:hover td{background:rgba(184,134,11,.06)}
+body.exec .rank{background:rgba(31,111,139,.14);color:#185b73}
+
+/* banners */
+body.exec .banner{background:linear-gradient(90deg,rgba(184,134,11,.12),rgba(31,111,139,.07));border-color:rgba(184,134,11,.32)}
+
+/* tanks / chat / ticker / swan / rail */
+body.exec .tank{background:rgba(255,252,245,.86);border:1px solid var(--border)}
+body.exec .tank .glass{background:rgba(90,68,34,.04);border-color:var(--border)}
+body.exec .msg.bot{background:rgba(255,252,245,.88);border:1px solid var(--border)}
+body.exec .msg.user{background:linear-gradient(135deg,var(--primary),#185b73);color:#fff}
+body.exec .chat-input input{background:rgba(90,68,34,.05)}
+body.exec .suggestions .s{border-color:rgba(31,111,139,.35);color:var(--primary)}
+body.exec .ticker{background:rgba(255,252,245,.72);border:1px solid var(--border)}
+body.exec .swan-opt{background:rgba(255,252,245,.72);border:1px solid var(--border)}
+body.exec .swan-opt.sel{background:rgba(178,58,52,.1);border-color:var(--danger)}
+body.exec .rail{background:rgba(253,249,240,.55);border-left:1px solid var(--border)}
+body.exec .alerts .a{background:rgba(255,252,245,.8);border:1px solid var(--border);border-left:3px solid var(--warning)}
+body.exec ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(184,134,11,.4),rgba(31,111,139,.35))}
+body.exec .leaflet-container{background:#e9ddc6}
+body.exec .demo-toast{background:rgba(255,252,245,.97);border:1px solid rgba(184,134,11,.45);
+  color:#2B2218;box-shadow:0 0 0 1px rgba(184,134,11,.15),0 18px 50px rgba(90,68,34,.2)}
+body.exec .demo-toast b{color:var(--primary)}
+body.exec .neri-val{text-shadow:0 0 22px rgba(31,111,139,.25)}
