@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="topbar-center">
-      <div class="search"><span>⌕</span><input placeholder="Search corridors, suppliers, scenarios…" /></div>
+      <div class="ticker" id="ticker"><span class="muted">loading market data…</span></div>
     </div>
     <div class="topbar-right">
       <button id="demoBtn" class="demo-btn">▶ RUN DEMO</button>
@@ -42,7 +42,8 @@
       <button class="nav-item" data-page="economic">📈 Economic Impact</button>
       <button class="nav-item" data-page="copilot">🤖 AI Copilot</button>
       <button class="nav-item" data-page="blackswan">🦢 Black Swan Generator</button>
-      <div class="nav-foot">v0.1 · GEOS Core<br/>8 agents online</div>
+      <button class="nav-item" data-page="benchmark">🎯 Detection Benchmark</button>
+      <div class="nav-foot">v0.2 · GEOS Core<br/>9 agents online</div>
     </nav>
 
     <!-- Main content -->
@@ -178,6 +179,31 @@
           <button id="swanRun" class="btn-primary">⚠ GENERATE BLACK SWAN</button></div>
         <div id="swanResult"></div>
       </section>
+      <!-- BENCHMARK -->
+      <section class="page" data-page="benchmark">
+        <div class="page-head"><h1>Detection Benchmark</h1>
+          <p class="muted">PHOENIX compound multi-signal detection vs a single-sensor baseline — the metric that saves lives</p></div>
+        <div class="inject-bar">
+          <button class="chip active" id="benchRun">▶ Run benchmark (600 episodes)</button>
+          <span class="muted small" id="benchStatus" style="align-self:center"></span>
+        </div>
+        <div id="benchSummary" class="banner"></div>
+        <div class="kpi-grid" id="benchKpis"></div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">📉 FALSE-NEGATIVE RATE (lower is better)</div>
+            <canvas id="fnrChart"></canvas></div>
+          <div class="card"><div class="card-title">⏱ DETECTION LEAD TIME (days before onset)</div>
+            <canvas id="leadChart"></canvas></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">CONFUSION MATRICES</div>
+            <div id="confusion" class="confusion"></div></div>
+          <div class="card"><div class="card-title">EXAMPLE EPISODE — why the baseline misses it</div>
+            <canvas id="episodeChart"></canvas>
+            <div id="episodeMeta" class="muted small"></div></div>
+        </div>
+      </section>
+
     </main>
 
     <!-- Right rail -->

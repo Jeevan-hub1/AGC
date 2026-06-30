@@ -77,8 +77,14 @@ class CausalResult:
 class CausalEngine:
     """Evaluate the SCM forward, with optional do-interventions."""
 
-    def __init__(self) -> None:
+    def __init__(self, baseline_brent: float | None = None) -> None:
         self.coeffs = dict(COEFFS)
+        # optional dynamic baseline (e.g. live market price); None => config
+        self._baseline_brent = baseline_brent
+
+    @property
+    def baseline_brent(self) -> float:
+        return self._baseline_brent if self._baseline_brent else config.BASELINE_BRENT_USD
 
     def _effective_shortfall(
         self, supply_loss_frac: float, hormuz_blocked: float
@@ -122,7 +128,7 @@ class CausalEngine:
         ) + risk_premium
         # blend with the event's immediate market reaction prior
         brent_change = max(brent_change, event.brent_jump_pct * 100)
-        brent = config.BASELINE_BRENT_USD * (1 + brent_change / 100)
+        brent = self.baseline_brent * (1 + brent_change / 100)
 
         # --- downstream real economy ---
         fuel_change = brent_change * self.coeffs["brent_to_fuel"]
@@ -137,7 +143,7 @@ class CausalEngine:
                 f"{hormuz_blocked:.0%} of {config.HORMUZ_TRANSIT_SHARE:.0%} exposure."
             ),
             "brent": (
-                f"Brent ${config.BASELINE_BRENT_USD:.0f} -> ${brent:.0f} "
+                f"Brent ${self.baseline_brent:.0f} -> ${brent:.0f} "
                 f"(+{brent_change:.1f}%): shortfall x {self.coeffs['shortfall_to_brent']} "
                 f"+ {risk_premium:.1f}% geopolitical risk premium."
             ),

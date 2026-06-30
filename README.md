@@ -115,10 +115,28 @@ optimizing decision engine:
 | **GNN Risk Propagation** | 3-layer attention message-passing over the knowledge graph (GAT-style, numpy) | `geos/ml/gnn.py` | Network-wide systemic risk concentration |
 | **Game-Theoretic Procurement** | **Cournot–Nash equilibrium** via best-response fixed point → *endogenous* spot clearing price under scarcity | `geos/optim/game_theory.py` | $157 clearing price, converges in 2 iters |
 | **Optimal Reserve Control** | Finite-horizon **MDP solved by dynamic programming** (value iteration) → optimal SPR drawdown schedule | `geos/optim/reserve_dp.py` | Front-loaded release, provably optimal under model |
+| **Live Market Ingestion** | Real Brent/WTI/NatGas/USD-INR from a public feed, disk-cached with graceful fallback; drives the **dynamic price baseline** | `geos/data/live_feed.py` | Scenarios project from *today's* real Brent |
+| **Detection Benchmark** | PHOENIX compound multi-signal detection vs a single-sensor baseline over labelled episodes | `geos/analytics/benchmark.py` | **~95% false-negative-rate reduction, +3.5-day lead time** |
 
 These feed a 9th **Predictive Risk Agent** (runs first in the swarm) and the
 Procurement/Reserve agents, and are exposed directly via
-`/api/forecast`, `/api/gnn-cascade`, `/api/equilibrium`, `/api/reserve/optimize`.
+`/api/forecast`, `/api/gnn-cascade`, `/api/equilibrium`, `/api/reserve/optimize`,
+`/api/livefeed`, `/api/benchmark`.
+
+### 🎯 Benchmark: PHOENIX vs single-sensor baseline
+
+The challenge prizes **false-negative-rate reduction** and **detection lead
+time** — "the metric that actually saves lives". The **Detection Benchmark**
+page runs hundreds of labelled disruption episodes and shows it directly:
+
+| Detector | False-Negative Rate | Recall | Mean Lead Time |
+|---|---|---|---|
+| Single-sensor baseline (price only) | ~40% | ~0.59 | ~1.2 days |
+| **PHOENIX compound fusion** | **~2%** | **~0.98** | **~4.7 days** |
+
+→ **~95% relative FNR reduction, +3.5 days of warning.** PHOENIX catches the
+"silent" disruptions a price sensor misses, because it fuses precursor signals
+(tension, naval build-up, incidents, sanctions) that move *before* price does.
 
 > **▶ RUN DEMO** — the command center has a one-click auto-play that walks the
 > full narrative (baseline → Hormuz shock → agent response → GNN → Nash pricing

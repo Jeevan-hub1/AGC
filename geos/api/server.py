@@ -18,9 +18,11 @@ from pydantic import BaseModel, Field
 
 from geos import __version__, config
 from geos.agents import SupervisorOrchestrator
+from geos.analytics import DetectionBenchmark
 from geos.api.copilot import Copilot
 from geos.data import seed_data as sd
 from geos.data.events import get_event, list_events
+from geos.data.live_feed import get_feed
 from geos.ml import GNNCascade, get_risk_model
 from geos.optim import ProcurementGame, ReserveDP
 from geos.scenario import WarGameSimulator
@@ -35,9 +37,18 @@ app.add_middleware(
 )
 
 # --- shared singletons (built once) ---
-ORCH = SupervisorOrchestrator()
+# Use the live market Brent price as the dynamic model baseline when available,
+# so scenarios project from *today's* real price. Falls back to config baseline.
+try:
+    _LIVE = get_feed().get()
+    _LIVE_BRENT = _LIVE.prices.get("brent") if _LIVE.source != "fallback" else None
+except Exception:
+    _LIVE_BRENT = None
+
+ORCH = SupervisorOrchestrator(baseline_brent=_LIVE_BRENT)
 COPILOT = Copilot(ORCH)
 SIM = WarGameSimulator()
+BENCH = DetectionBenchmark()
 
 # Warm the ML foundation model at import so the first request is fast.
 try:
@@ -203,6 +214,20 @@ def reserve_optimize(req: ScenarioRequest) -> dict:
         * config.DAILY_CRUDE_DEMAND_MBPD
     return ReserveDP(total_reserve_mmbbl=available, horizon_days=30).solve(
         daily_gap_mmbbl=max(0.1, daily_gap)).to_dict()
+
+
+@app.get("/api/livefeed")
+def livefeed(force: bool = False) -> dict:
+    """Live market data (Brent/WTI/NatGas/USD-INR) with cache + fallback."""
+    snap = get_feed().get(force=force)
+    return {**snap.to_dict(), "model_baseline_brent": ORCH.causal.baseline_brent}
+
+
+@app.get("/api/benchmark")
+def benchmark(episodes: int = 600) -> dict:
+    """PHOENIX compound detection vs single-sensor baseline metrics."""
+    episodes = max(100, min(episodes, 5000))
+    return BENCH.run(episodes=episodes).to_dict()
 
 
 # ------------------------------------------------------------------ #

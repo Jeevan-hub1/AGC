@@ -37,10 +37,12 @@ from geos.neri import NERICalculator
 
 
 class SupervisorOrchestrator:
-    def __init__(self, sim_runs: int = config.DEFAULT_SIM_RUNS) -> None:
+    def __init__(self, sim_runs: int = config.DEFAULT_SIM_RUNS,
+                 baseline_brent: float | None = None) -> None:
         self.graph = build_world_graph()
-        self.causal = CausalEngine()
-        self.neri = NERICalculator()
+        self.causal = CausalEngine(baseline_brent=baseline_brent)
+        self.neri = NERICalculator(baseline_brent=baseline_brent)
+        self.baseline_brent = baseline_brent
         # ordered pipeline (dependency-respecting)
         self.pipeline = [
             PredictiveRiskAgent(),

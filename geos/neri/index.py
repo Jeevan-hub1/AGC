@@ -52,8 +52,13 @@ class NERIScore:
 class NERICalculator:
     """Compute NERI from baseline structure + an optional active shock."""
 
-    def __init__(self) -> None:
+    def __init__(self, baseline_brent: float | None = None) -> None:
         self.weights = config.NERI_WEIGHTS
+        self._baseline_brent = baseline_brent
+
+    @property
+    def baseline_brent(self) -> float:
+        return self._baseline_brent if self._baseline_brent else config.BASELINE_BRENT_USD
 
     # ---- sub-indicators (each returns 0-100, higher = more resilient) ---- #
     def _import_dependency(self) -> float:
@@ -80,7 +85,7 @@ class NERICalculator:
 
     def _price_stability(self, brent: float) -> float:
         # full marks at baseline; degrades as Brent rises above baseline
-        ratio = brent / config.BASELINE_BRENT_USD
+        ratio = brent / self.baseline_brent
         return float(max(0.0, 100 - (ratio - 1) * 120))
 
     def _geopolitical_tension(self, tension: float) -> float:

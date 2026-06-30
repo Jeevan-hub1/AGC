@@ -43,6 +43,8 @@ async function init(){
     $('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat();});
     $('#swanRun').onclick=runBlackSwan;
     $('#demoBtn').onclick=runDemo;
+    $('#benchRun').onclick=runBenchmark;
+    loadTicker(); setInterval(loadTicker, 60000);
     // default active scenario so every page has data
     await runScenario('hormuz_partial');
     botMsg("PHOENIX online. 8 agents on watch. Ask me what happens if a corridor closes, or inject a scenario from the simulator.");
@@ -320,12 +322,14 @@ async function runDemo(){
     {p:'procurement',msg:'Autonomous Procurement Orchestrator generates a ranked backfill plan at the <b>Nash equilibrium</b> clearing price.',ms:4200},
     {p:'reserves',msg:'DP solver computes the <b>optimal SPR drawdown</b> schedule to bridge the gap.',ms:3600},
     {p:'economic',msg:'Economic twin transmits the shock: Brent → fuel → inflation → GDP.',ms:3600},
+    {p:'benchmark',bench:true,msg:'Proof: PHOENIX compound detection vs a single-sensor baseline — cutting false negatives and buying days of lead time.',ms:5000},
     {p:'blackswan',msg:'Now the tail: compounding shocks into a <b>Black Swan</b>. This is what resilience planning must survive.',ms:3000},
   ];
   for(const s of steps){
     if(!demoRunning)break;
     gotoPage(s.p); toast(s.msg);
     if(s.ev) await runScenario(s.ev);
+    if(s.bench) await runBenchmark();
     await sleep(s.ms);
   }
   if(demoRunning){
@@ -335,6 +339,73 @@ async function runDemo(){
     await sleep(4000);
   }
   hideToast(); btn.classList.remove('running'); btn.textContent='▶ RUN DEMO'; demoRunning=false;
+}
+
+/* ---------- Live market ticker ---------- */
+async function loadTicker(){
+  try{
+    const lf=await api('/api/livefeed');
+    const items=[
+      ['BRENT','brent','$'],['WTI','wti','$'],['NAT GAS','natgas','$'],['USD/INR','usdinr','₹']
+    ].map(([lbl,k,pre])=>{
+      const p=lf.prices[k], ch=(lf.changes_pct||{})[k]||0;
+      const col=ch>=0?C.success:C.danger, arr=ch>=0?'▲':'▼';
+      return `<span class="tk"><span class="sym">${lbl}</span> <b>${pre}${fmt(p,2)}</b> <span style="color:${col}">${arr}${fmt(Math.abs(ch),2)}%</span></span>`;
+    }).join('');
+    $('#ticker').innerHTML=items+`<span class="src ${lf.source}">${lf.source.toUpperCase()}</span>`;
+    state.live=lf;
+  }catch(e){ $('#ticker').innerHTML='<span class="muted">market data unavailable</span>'; }
+}
+
+/* ---------- Detection Benchmark ---------- */
+async function runBenchmark(){
+  $('#benchStatus').innerHTML='<span class="spin"></span> running episodes…';
+  const b=await api('/api/benchmark?episodes=600');
+  $('#benchStatus').textContent='';
+  $('#benchSummary').innerHTML='🎯 '+b.summary;
+  const kp=[
+    ['FNR Reduction','-'+fmt(b.fnr_reduction_rel_pct)+'%',C.success,'relative'],
+    ['Lead-Time Gain','+'+fmt(b.lead_time_gain_days,1)+'d',C.primary,'vs baseline'],
+    ['PHOENIX Recall',fmt(b.phoenix.recall*100)+'%',C.success,'vs '+fmt(b.baseline.recall*100)+'% baseline'],
+    ['PHOENIX FNR',fmt(b.phoenix.fnr*100)+'%',C.success,'vs '+fmt(b.baseline.fnr*100)+'% baseline'],
+  ];
+  $('#benchKpis').innerHTML=kp.map(k=>`<div class="kpi"><div class="label">${k[0]}</div><div class="value" style="color:${k[2]}">${k[1]}</div><div class="delta flat">${k[3]}</div></div>`).join('');
+
+  if(state.charts.fnr)state.charts.fnr.destroy();
+  state.charts.fnr=new Chart($('#fnrChart'),{type:'bar',
+    data:{labels:['Single-Sensor Baseline','PHOENIX Compound'],
+      datasets:[{data:[b.baseline.fnr*100,b.phoenix.fnr*100],
+        backgroundColor:[C.danger,C.success],borderRadius:6}]},
+    options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y.toFixed(1)+'% false negatives'}}},
+      scales:{y:{max:100,ticks:{color:C.sub,callback:v=>v+'%'},grid:{color:'rgba(255,255,255,.06)'}},x:{ticks:{color:C.sub},grid:{display:false}}}}});
+
+  if(state.charts.lead)state.charts.lead.destroy();
+  state.charts.lead=new Chart($('#leadChart'),{type:'bar',
+    data:{labels:['Single-Sensor Baseline','PHOENIX Compound'],
+      datasets:[{data:[b.baseline.mean_lead_days,b.phoenix.mean_lead_days],
+        backgroundColor:[C.sub,C.primary],borderRadius:6}]},
+    options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.x.toFixed(1)+' days before onset'}}},
+      scales:{x:{ticks:{color:C.sub},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:C.sub},grid:{display:false}}}}});
+
+  const cm=(m,t)=>`<div class="cm"><h4>${t}</h4><div class="cm-grid">
+    <div class="cm-cell tp"><div class="lbl">True Pos</div><div class="n">${m.confusion.tp}</div></div>
+    <div class="cm-cell fp"><div class="lbl">False Pos</div><div class="n">${m.confusion.fp}</div></div>
+    <div class="cm-cell fn"><div class="lbl">False Neg</div><div class="n">${m.confusion.fn}</div></div>
+    <div class="cm-cell tn"><div class="lbl">True Neg</div><div class="n">${m.confusion.tn}</div></div></div></div>`;
+  $('#confusion').innerHTML=cm(b.baseline,'Single-Sensor Baseline')+cm(b.phoenix,'PHOENIX Compound');
+
+  const ex=b.series_example;
+  if(ex && ex.days){
+    if(state.charts.ep)state.charts.ep.destroy();
+    state.charts.ep=new Chart($('#episodeChart'),{type:'line',
+      data:{labels:ex.days.map(d=>'D'+d),datasets:[
+        {label:'Price signal (z)',data:ex.price_z,borderColor:C.warning,tension:.3,pointRadius:0},
+        {label:'PHOENIX fusion',data:ex.fusion.map(f=>f*4),borderColor:C.primary,tension:.3,pointRadius:0}]},
+      options:{plugins:{legend:{labels:{color:C.sub,boxWidth:12}}},
+        scales:{x:{ticks:{color:C.sub},grid:{display:false}},y:{ticks:{color:C.sub},grid:{color:'rgba(255,255,255,.06)'}}}}});
+    const bf=ex.baseline_fire_day, pf=ex.phoenix_fire_day;
+    $('#episodeMeta').innerHTML=`A <b>${ex.kind}</b> disruption. PHOENIX fired on day ${pf<0?'—':'D'+pf}; single-sensor baseline ${bf<0?'<b style="color:#FF4D4D">never detected it</b>':'fired on day D'+bf}. PHOENIX sees precursor signals (tension, naval build-up, incidents) before price moves.`;
+  }
 }
 
 /* ---------- Copilot ---------- */
