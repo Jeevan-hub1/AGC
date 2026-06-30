@@ -11,14 +11,14 @@ def orch():
     return SupervisorOrchestrator(sim_runs=400)
 
 
-def test_roster_has_eight_agents(orch):
-    assert len(orch.roster()) == 8
+def test_roster_has_nine_agents(orch):
+    assert len(orch.roster()) == 9
 
 
 def test_every_event_produces_full_response(orch):
     for eid in EVENT_CATALOG:
         r = orch.respond_to_id(eid, sim_runs=300)
-        assert len(r["agent_reports"]) == 8
+        assert len(r["agent_reports"]) == 9
         assert "decision_brief" in r
         assert r["total_elapsed_ms"] > 0
         # every report is explainable
@@ -49,7 +49,7 @@ def test_black_swan_coordination(orch):
         ["hormuz_partial", "russia_secondary_sanctions"], sim_runs=300
     )
     assert "black_swan_components" in r
-    assert len(r["agent_reports"]) == 8
+    assert len(r["agent_reports"]) == 9
 
 
 def test_no_agent_loops_or_duplicates(orch):

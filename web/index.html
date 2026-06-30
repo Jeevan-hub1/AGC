@@ -22,6 +22,7 @@
       <div class="search"><span>⌕</span><input placeholder="Search corridors, suppliers, scenarios…" /></div>
     </div>
     <div class="topbar-right">
+      <button id="demoBtn" class="demo-btn">▶ RUN DEMO</button>
       <div class="sys-status" id="sysStatus"><span class="dot"></span> SYSTEM ONLINE</div>
       <div class="clock" id="clock">--:--:--</div>
       <div class="avatar">CMD</div>
@@ -87,6 +88,9 @@
         <div class="page-head"><h1>Geopolitical Intelligence</h1>
           <p class="muted">Risk scoring from the geopolitical & sanctions agents</p></div>
         <div class="kpi-grid" id="geoKpis"></div>
+        <div class="card"><div class="card-title">🔮 PREDICTIVE CORRIDOR FORECAST — Foundation Model <span id="aucBadge" class="badge"></span></div>
+          <div class="muted small" style="margin-bottom:10px">Trained gradient-boosted model: P(disruption) + lead time per corridor</div>
+          <table class="tbl" id="forecastTable"></table></div>
         <div class="card"><div class="card-title">SUPPLIER STABILITY MATRIX</div>
           <div id="supplierMatrix" class="matrix"></div></div>
       </section>
@@ -101,6 +105,9 @@
           <div class="card"><div class="card-title">REFINERY FEEDSTOCK-AT-RISK (active scenario)</div>
             <canvas id="cascadeChart"></canvas></div>
         </div>
+        <div class="card"><div class="card-title">🕸 GNN ATTENTION RISK PROPAGATION <span class="badge" id="gnnBadge"></span></div>
+          <div class="muted small" style="margin-bottom:10px">3-layer message-passing — risk concentration across the network</div>
+          <div id="gnnRanking" class="matrix"></div></div>
       </section>
 
       <!-- SCENARIO -->
@@ -132,6 +139,9 @@
         <div class="page-head"><h1>Strategic Petroleum Reserves</h1>
           <p class="muted">Drawdown optimisation under the active scenario</p></div>
         <div id="reserveTanks" class="tanks"></div>
+        <div class="card"><div class="card-title">📉 DP-OPTIMAL DRAWDOWN SCHEDULE (finite-horizon MDP)</div>
+          <canvas id="dpChart"></canvas>
+          <div id="dpMeta" class="muted small"></div></div>
         <div class="card"><div class="card-title">RESERVE AGENT RECOMMENDATIONS</div>
           <ul id="reserveRecs" class="recs"></ul></div>
       </section>

@@ -123,10 +123,22 @@ class ProcurementAgent(Agent):
             })
 
         coverage = (shortfall_share - remaining) / shortfall_share if shortfall_share else 1.0
+
+        # --- game-theoretic spot pricing (Cournot-Nash equilibrium) ---
+        shortfall_mbpd = shortfall_share * config.DAILY_CRUDE_DEMAND_MBPD
+        equilibrium = None
+        if shortfall_mbpd > 1e-3:
+            from geos.optim.game_theory import ProcurementGame
+            eq = ProcurementGame().solve(
+                disrupted_ids=list(disrupted), shortfall_mbpd=shortfall_mbpd)
+            equilibrium = eq.to_dict()
+
         headline = (
             f"Shortfall {shortfall_share*100:.1f}% of imports; generated "
             f"{len(plan)}-source plan covering {coverage*100:.0f}% "
             f"(uncovered {remaining*100:.1f}%)."
+            + (f" Nash clearing price ${equilibrium['clearing_price_usd']:.0f}."
+               if equilibrium else "")
         )
 
         recs = [
@@ -151,6 +163,7 @@ class ProcurementAgent(Agent):
                 "residual_gap_pct": round(remaining * 100, 2),
                 "est_daily_premium_cost_usd": round(est_premium_cost, 0),
                 "ranked_plan": plan,
+                "nash_equilibrium": equilibrium,
             },
             recommendations=recs,
         )

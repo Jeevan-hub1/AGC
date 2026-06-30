@@ -45,10 +45,21 @@ class ReserveAgent(Agent):
             })
 
         finite_days = None if days_cover == float("inf") else round(days_cover, 1)
+
+        # --- optimal drawdown via dynamic programming (finite-horizon MDP) ---
+        dp_policy = None
+        if daily_gap_mmbbl > 1e-6:
+            from geos.optim.reserve_dp import ReserveDP
+            dp = ReserveDP(total_reserve_mmbbl=available_mmbbl, horizon_days=30)
+            dp_policy = dp.solve(daily_gap_mmbbl=daily_gap_mmbbl).to_dict()
+
         headline = (
             f"Residual gap {residual_gap*100:.1f}%/day; SPR provides "
             + (f"{finite_days} days of cover at current drawdown."
                if finite_days is not None else "ample cover (no gap).")
+            + (f" DP-optimal day-1 release "
+               f"{dp_policy['schedule_summary']['day1_release_mmbbl']} mmbbl."
+               if dp_policy else "")
         )
 
         recs = []
@@ -79,6 +90,7 @@ class ReserveAgent(Agent):
                 "days_cover_under_shock": finite_days,
                 "recommended_daily_release_mmbbl": round(recommended_release, 3),
                 "drawdown_schedule": schedule,
+                "dp_optimal_policy": dp_policy,
             },
             recommendations=recs,
         )

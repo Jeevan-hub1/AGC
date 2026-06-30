@@ -20,7 +20,9 @@ from geos import __version__, config
 from geos.agents import SupervisorOrchestrator
 from geos.api.copilot import Copilot
 from geos.data import seed_data as sd
-from geos.data.events import list_events
+from geos.data.events import get_event, list_events
+from geos.ml import GNNCascade, get_risk_model
+from geos.optim import ProcurementGame, ReserveDP
 from geos.scenario import WarGameSimulator
 
 app = FastAPI(
@@ -36,6 +38,12 @@ app.add_middleware(
 ORCH = SupervisorOrchestrator()
 COPILOT = Copilot(ORCH)
 SIM = WarGameSimulator()
+
+# Warm the ML foundation model at import so the first request is fast.
+try:
+    get_risk_model()
+except Exception:  # pragma: no cover - never block startup on warmup
+    pass
 
 WEB_DIR = Path(__file__).resolve().parents[2] / "web"
 
@@ -144,6 +152,57 @@ def black_swan(req: BlackSwanRequest) -> dict:
 @app.post("/api/copilot")
 def copilot(req: CopilotRequest) -> dict:
     return COPILOT.ask(req.question)
+
+
+# ------------------------------------------------------------------ #
+# Advanced ML / optimization endpoints
+# ------------------------------------------------------------------ #
+@app.get("/api/forecast")
+def forecast(event_id: Optional[str] = None) -> dict:
+    """Geopolitical Risk Foundation Model: per-corridor disruption forecast."""
+    model = get_risk_model()
+    event = get_event(event_id) if event_id else None
+    preds = model.predict_corridors(event)
+    return {
+        "model_auc": round(model.auc_, 3),
+        "feature_importance": model.feature_importance(),
+        "corridor_forecast": [p.to_dict() for p in preds],
+    }
+
+
+@app.get("/api/gnn-cascade")
+def gnn_cascade(event_id: Optional[str] = None) -> dict:
+    """GNN attention message-passing cascade over the knowledge graph."""
+    gnn = GNNCascade(ORCH.graph)
+    if event_id:
+        ev = get_event(event_id)
+        return gnn.cascade(disrupted_suppliers=ev.affected_suppliers,
+                           disrupted_corridors=ev.affected_corridors)
+    return gnn.cascade(disrupted_corridors=["cor_hormuz"])
+
+
+@app.post("/api/equilibrium")
+def equilibrium(req: ScenarioRequest) -> dict:
+    """Cournot-Nash spot-price equilibrium for the event's shortfall."""
+    ev = get_event(req.event_id)
+    disrupted = list(ev.affected_suppliers)
+    if "cor_hormuz" in ev.affected_corridors and ev.hormuz_closure_prob > 0.4:
+        disrupted += [s.id for s in sd.SUPPLIERS if s.via_hormuz]
+    shortfall = sum(s.share for s in sd.SUPPLIERS if s.id in set(disrupted)) \
+        * max(ev.hormuz_closure_prob, 0.5) * config.DAILY_CRUDE_DEMAND_MBPD
+    return ProcurementGame().solve(
+        disrupted_ids=list(set(disrupted)), shortfall_mbpd=shortfall).to_dict()
+
+
+@app.post("/api/reserve/optimize")
+def reserve_optimize(req: ScenarioRequest) -> dict:
+    """DP-optimal SPR drawdown schedule (finite-horizon MDP)."""
+    available = sum(r.capacity_mmbbl * r.fill_pct for r in sd.RESERVES)
+    ev = get_event(req.event_id)
+    daily_gap = ev.hormuz_closure_prob * config.HORMUZ_TRANSIT_SHARE * 0.5 \
+        * config.DAILY_CRUDE_DEMAND_MBPD
+    return ReserveDP(total_reserve_mmbbl=available, horizon_days=30).solve(
+        daily_gap_mmbbl=max(0.1, daily_gap)).to_dict()
 
 
 # ------------------------------------------------------------------ #

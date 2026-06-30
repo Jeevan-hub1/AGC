@@ -42,6 +42,7 @@ async function init(){
     $('#chatSend').onclick=sendChat;
     $('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat();});
     $('#swanRun').onclick=runBlackSwan;
+    $('#demoBtn').onclick=runDemo;
     // default active scenario so every page has data
     await runScenario('hormuz_partial');
     botMsg("PHOENIX online. 8 agents on watch. Ask me what happens if a corridor closes, or inject a scenario from the simulator.");
@@ -134,6 +135,7 @@ async function runScenario(id){
   renderExecutive(r); renderCausal(r); renderDist(r); renderFeed(r);
   renderProcurement(r); renderReserves(r); renderEconomic(r);
   renderGeo(r); renderCascade(r); renderAlerts(r); renderRailRecs(r);
+  renderPredictive(r); renderGNN(r);
   const dis = collectDisrupted(r);
   drawMap(dis);
 }
@@ -175,7 +177,9 @@ function renderFeed(r){
 /* ---------- Procurement ---------- */
 function renderProcurement(r){
   const p=r.agent_reports.find(a=>a.agent==='procurement_orchestrator').findings;
-  $('#procSummary').innerHTML=`<b>Shortfall ${fmt(p.shortfall_share_pct,1)}%</b> of imports · disrupted: ${(p.disrupted_suppliers||[]).join(', ')||'none'} · plan covers <b style="color:${p.coverage_pct>=99?C.success:C.warning}">${fmt(p.coverage_pct,0)}%</b> · est. daily premium $${fmt(p.est_daily_premium_cost_usd/1e6,1)}M`;
+  const nash=p.nash_equilibrium;
+  $('#procSummary').innerHTML=`<b>Shortfall ${fmt(p.shortfall_share_pct,1)}%</b> of imports · disrupted: ${(p.disrupted_suppliers||[]).join(', ')||'none'} · plan covers <b style="color:${p.coverage_pct>=99?C.success:C.warning}">${fmt(p.coverage_pct,0)}%</b> · est. daily premium $${fmt(p.est_daily_premium_cost_usd/1e6,1)}M`
+    +(nash?`<br><span style="color:${C.secondary}">⚖ Cournot–Nash equilibrium clearing price <b>$${fmt(nash.clearing_price_usd)}</b> (+$${fmt(nash.premium_over_baseline_usd)} vs baseline) · converged in ${nash.iterations} iterations</span>`:'');
   const rows=(p.ranked_plan||[]).map(x=>`<tr><td><span class="rank">${x.rank}</span></td><td>${x.supplier}</td>
     <td>${x.grade}</td><td>+${fmt(x.backfill_share_pct,1)}%</td><td>${fmt(x.volume_mbpd,3)} mbpd</td>
     <td>$${fmt(x.spot_premium_usd,1)}</td><td>${x.lead_time_days} d</td><td>${fmt(x.utility_score,3)}</td></tr>`).join('');
@@ -195,6 +199,20 @@ function renderReserves(r){
   const cov=rv.days_cover_under_shock; 
   $('#reserveRecs').innerHTML=r.agent_reports.find(a=>a.agent==='reserve_optimizer').recommendations.map(x=>`<li>↳ ${x}</li>`).join('')
     +`<li>Days of cover under shock: <b style="color:${cov&&cov<30?C.warning:C.success}">${cov===null?'ample':cov+' days'}</b></li>`;
+  // DP-optimal drawdown schedule
+  const dp=rv.dp_optimal_policy;
+  if(state.charts.dp)state.charts.dp.destroy();
+  if(dp){
+    state.charts.dp=new Chart($('#dpChart'),{type:'line',
+      data:{labels:dp.optimal_release_schedule.map((_,i)=>'D'+(i+1)),
+        datasets:[{label:'Optimal release (mmbbl/day)',data:dp.optimal_release_schedule,
+          borderColor:C.warning,backgroundColor:'rgba(255,184,0,.15)',fill:true,tension:.3,pointRadius:0}]},
+      options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:C.sub,maxTicksLimit:10},grid:{display:false}},
+        y:{ticks:{color:C.sub},grid:{color:'rgba(255,255,255,.06)'}}}}});
+    $('#dpMeta').innerHTML=`Horizon ${dp.horizon_days}d · day-1 release <b style="color:#fff">${fmt(dp.schedule_summary.day1_release_mmbbl,2)}</b> mmbbl · total released ${fmt(dp.schedule_summary.total_released_mmbbl,1)} mmbbl · final reserve ${fmt(dp.final_reserve_mmbbl,1)} mmbbl · unmet gap ${fmt(dp.total_unmet_gap_mmbbl,2)} mmbbl`;
+  } else {
+    $('#dpMeta').innerHTML='<span class="muted">No drawdown required — procurement covers the shortfall. (DP engages when a residual gap exists, e.g. Black Swan.)</span>';
+  }
 }
 
 /* ---------- Economic ---------- */
@@ -256,6 +274,67 @@ function renderRailRecs(r){
   const acts=(r.decision_brief.top_actions||[]);
   $('#railRecs').innerHTML=(acts.length?acts:[{priority:'LOW',action:'Maintain monitoring',domain:'Ops'}])
     .map(a=>`<div class="r"><b>[${a.priority}] ${a.domain}</b><br>${a.action}</div>`).join('');
+}
+
+/* ---------- Predictive Foundation Model + GNN ---------- */
+function renderPredictive(r){
+  const pa=r.agent_reports.find(a=>a.agent==='predictive_risk'); if(!pa)return;
+  const f=pa.findings;
+  $('#aucBadge').textContent='AUC '+fmt(f.model_auc,3);
+  const rows=(f.corridor_forecast||[]).map(c=>{
+    const p=c.disruption_probability*100, col=p>70?C.danger:p>40?C.warning:C.success;
+    return `<tr><td>${c.corridor_name}</td>
+      <td class="fc-prob" style="color:${col}">${fmt(p)}%</td>
+      <td>${fmt(c.lead_time_days,1)} days</td>
+      <td class="muted small">${Object.keys(c.top_drivers||{}).join(', ')}</td></tr>`;}).join('');
+  $('#forecastTable').innerHTML=`<thead><tr><th>Corridor</th><th>P(disruption)</th><th>Lead Time</th><th>Top Drivers</th></tr></thead><tbody>${rows}</tbody>`;
+}
+function renderGNN(r){
+  const pa=r.agent_reports.find(a=>a.agent==='predictive_risk'); if(!pa)return;
+  const f=pa.findings;
+  $('#gnnBadge').textContent='mean risk '+fmt(f.gnn_mean_network_risk,1)+'%';
+  $('#gnnRanking').innerHTML=(f.gnn_systemic_ranking||[]).map(n=>{
+    const col=n.risk>70?C.danger:n.risk>40?C.warning:C.primary;
+    return `<div class="cellm"><div class="n">${n.node}</div>
+      <div class="bar"><i style="width:${n.risk}%;background:${col}"></i></div>
+      <div class="muted small" style="margin-top:5px">risk ${fmt(n.risk,1)}%</div></div>`;}).join('');
+}
+
+/* ---------- Auto-play demo mode ---------- */
+let demoRunning=false;
+function toast(html){
+  let t=$('#demoToast'); if(!t){t=document.createElement('div');t.id='demoToast';t.className='demo-toast';document.body.appendChild(t);}
+  t.innerHTML=html; t.style.display='block';
+}
+function hideToast(){const t=$('#demoToast'); if(t)t.style.display='none';}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function gotoPage(p){const b=$(`.nav-item[data-page="${p}"]`); if(b)b.click();}
+async function runDemo(){
+  if(demoRunning)return; demoRunning=true;
+  const btn=$('#demoBtn'); btn.classList.add('running'); btn.textContent='■ DEMO RUNNING';
+  const steps=[
+    {p:'executive',msg:'<b>PHOENIX</b> baseline — India at NERI ~64 (STABLE). 88% import-dependent, 9.5 days SPR cover.',ms:3200},
+    {p:'geopolitical',ev:'hormuz_partial',msg:'⚠ INJECT: <b>Strait of Hormuz partial closure</b> — Foundation Model forecasts 97% disruption, ~2-day lead time.',ms:4200},
+    {p:'scenario',msg:'9 agents orchestrate a national response in milliseconds — war-gaming thousands of futures…',ms:4200},
+    {p:'twin',msg:'GNN propagates systemic risk — the network reveals single points of failure.',ms:3600},
+    {p:'procurement',msg:'Autonomous Procurement Orchestrator generates a ranked backfill plan at the <b>Nash equilibrium</b> clearing price.',ms:4200},
+    {p:'reserves',msg:'DP solver computes the <b>optimal SPR drawdown</b> schedule to bridge the gap.',ms:3600},
+    {p:'economic',msg:'Economic twin transmits the shock: Brent → fuel → inflation → GDP.',ms:3600},
+    {p:'blackswan',msg:'Now the tail: compounding shocks into a <b>Black Swan</b>. This is what resilience planning must survive.',ms:3000},
+  ];
+  for(const s of steps){
+    if(!demoRunning)break;
+    gotoPage(s.p); toast(s.msg);
+    if(s.ev) await runScenario(s.ev);
+    await sleep(s.ms);
+  }
+  if(demoRunning){
+    // black swan finale
+    $$('#swanPicker input').forEach(i=>{i.checked=['hormuz_partial','russia_secondary_sanctions','redsea_suspension'].includes(i.value);i.dispatchEvent(new Event('change'));});
+    await runBlackSwan(); toast('🦢 <b>Black Swan</b> simulated — PHOENIX delivered a coordinated national response end-to-end. Demo complete.');
+    await sleep(4000);
+  }
+  hideToast(); btn.classList.remove('running'); btn.textContent='▶ RUN DEMO'; demoRunning=false;
 }
 
 /* ---------- Copilot ---------- */
