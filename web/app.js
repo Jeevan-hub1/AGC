@@ -16,6 +16,57 @@ async function api(path, body){
   return r.json();
 }
 
+/* ---------- animated particle-network background ---------- */
+function bgFX(){
+  const cv=$('#bgfx'); if(!cv)return; const ctx=cv.getContext('2d');
+  let w,h,pts;
+  const resize=()=>{w=cv.width=innerWidth;h=cv.height=innerHeight;
+    const n=Math.min(70,Math.floor(w*h/26000));
+    pts=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,
+      vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25}));};
+  resize(); addEventListener('resize',resize);
+  const tick=()=>{
+    ctx.clearRect(0,0,w,h);
+    for(const p of pts){p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1;}
+    for(let i=0;i<pts.length;i++){
+      const a=pts[i];
+      ctx.beginPath();ctx.arc(a.x,a.y,1.4,0,7);ctx.fillStyle='rgba(0,229,255,.55)';ctx.fill();
+      for(let j=i+1;j<pts.length;j++){
+        const b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
+        if(d<19000){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+          ctx.strokeStyle='rgba(108,99,255,'+(0.16*(1-d/19000))+')';ctx.lineWidth=1;ctx.stroke();}
+      }
+    }
+    requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+/* ---------- count-up + flash ---------- */
+function countUp(el,dur=750){
+  const txt=el.textContent.trim();
+  const m=txt.match(/^([^0-9\-]*)(-?[0-9]+(?:\.[0-9]+)?)(.*)$/);
+  if(!m)return; const pre=m[1],num=m[2],suf=m[3];
+  const target=parseFloat(num), dec=(num.split('.')[1]||'').length;
+  const t0=performance.now();
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  const step=t=>{const k=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-k,3);
+    el.textContent=pre+(target*e).toFixed(dec)+suf;
+    if(k<1)requestAnimationFrame(step);};
+  requestAnimationFrame(step);
+}
+function animateKpis(){ $$('#kpiGrid .value').forEach(e=>countUp(e)); }
+
+/* ---------- threat-level indicator ---------- */
+function updateThreat(band){
+  const map={RESILIENT:['LOW','lvl-resilient'],STABLE:['GUARDED','lvl-stable'],
+    WATCH:['ELEVATED','lvl-watch'],CRITICAL:['SEVERE','lvl-critical']};
+  const [lbl,cls]=map[band]||['—','lvl-stable'];
+  const el=$('#threat'); if(!el)return;
+  el.className='threat '+cls; $('#threatLvl').textContent=lbl;
+}
+
 /* ---------- navigation ---------- */
 function setupNav(){
   $$('.nav-item').forEach(b=>b.onclick=()=>{
@@ -32,11 +83,17 @@ function clock(){
 }
 
 /* ---------- init ---------- */
+function bootStep(msg){ const el=$('#bootStatus'); if(el)el.textContent=msg; }
+function hideBoot(){ const b=$('#boot'); if(b){b.classList.add('hide'); setTimeout(()=>b.remove(),800);} }
+
 async function init(){
+  bgFX();
   setupNav(); clock(); setInterval(clock,1000);
   try{
+    bootStep('LOADING WORLD MODEL…');
     state.world = await api('/api/worldmodel');
     const ev = await api('/api/events'); state.events = ev.events;
+    bootStep('CALIBRATING ENGINES…');
     buildInjectBar(); buildSwanPicker(); buildChatSuggest();
     initMap(); renderVulnerability();
     $('#chatSend').onclick=sendChat;
@@ -45,10 +102,13 @@ async function init(){
     $('#demoBtn').onclick=runDemo;
     $('#benchRun').onclick=runBenchmark;
     loadTicker(); setInterval(loadTicker, 60000);
+    bootStep('ACTIVATING 9-AGENT SWARM…');
     // default active scenario so every page has data
     await runScenario('hormuz_partial');
-    botMsg("PHOENIX online. 8 agents on watch. Ask me what happens if a corridor closes, or inject a scenario from the simulator.");
-  }catch(e){ console.error(e); $('#sysStatus').innerHTML='<span class="dot" style="background:var(--danger)"></span> BACKEND OFFLINE'; }
+    botMsg("PHOENIX online. 9 agents on watch. Ask me what happens if a corridor closes, or inject a scenario from the simulator.");
+    bootStep('GEOS CORE ONLINE');
+    setTimeout(hideBoot, 500);
+  }catch(e){ console.error(e); $('#sysStatus').innerHTML='<span class="dot" style="background:var(--danger)"></span> BACKEND OFFLINE'; hideBoot(); }
 }
 
 /* ---------- Executive ---------- */
@@ -73,6 +133,9 @@ function renderExecutive(r){
   const be=$('#neriBand'); be.textContent=na.band; be.style.color=bandColor;
   $('#neriDrivers').innerHTML='<b>Weakest drivers:</b><br>'+na.drivers.map(d=>'• '+d).join('<br>');
   drawRadar(na.components);
+  updateThreat(na.band);
+  animateKpis();
+  countUp($('#neriVal'));
 }
 
 function drawNeriGauge(score,band){
@@ -114,8 +177,11 @@ function drawMap(disrupted={suppliers:[],corridors:[]}){
   // supplier -> India flow lines
   w.suppliers.forEach(s=>{
     const cut=disrupted.suppliers.includes(s.id);
-    add(L.polyline([s.coords,w.center],{color:cut?C.danger:'rgba(0,229,255,.25)',weight:Math.max(1,s.share*12),opacity:cut?.9:.5}));
-    add(L.circleMarker(s.coords,{radius:5+s.share*20,color:cut?C.danger:C.primary,fillColor:cut?C.danger:C.primary,fillOpacity:.65,weight:1})
+    add(L.polyline([s.coords,w.center],{color:cut?C.danger:'rgba(0,229,255,.30)',
+      weight:Math.max(1.5,s.share*12),opacity:cut?.95:.55,
+      className:cut?'flow-cut':'flow-live'}));
+    add(L.circleMarker(s.coords,{radius:5+s.share*20,color:cut?C.danger:C.primary,
+      fillColor:cut?C.danger:C.primary,fillOpacity:.65,weight:1,className:cut?'mk-cut':''})
       .bindPopup(`<b>${s.name}</b><br>Share ${(s.share*100).toFixed(0)}%<br>Grade ${s.grade}<br>${s.via_hormuz?'⚠ via Hormuz':'non-Hormuz'}${cut?'<br><b style="color:#FF4D4D">DISRUPTED</b>':''}`));
   });
   w.refineries.forEach(r=>add(L.circleMarker(r.coords,{radius:6,color:C.secondary,fillColor:C.secondary,fillOpacity:.8,weight:1})

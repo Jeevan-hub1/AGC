@@ -5,10 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT PHOENIX · National Energy Resilience OS</title>
   <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
+  <!-- Animated background -->
+  <canvas id="bgfx"></canvas>
+  <div class="bg-grid"></div>
+
+  <!-- Boot splash -->
+  <div id="boot">
+    <div class="boot-core">
+      <div class="boot-rings"><span></span><span></span><span></span></div>
+      <div class="boot-logo">◆</div>
+    </div>
+    <div class="boot-title">PROJECT <span>PHOENIX</span></div>
+    <div class="boot-sub">National Energy Resilience Operating System</div>
+    <div class="boot-bar"><i></i></div>
+    <div class="boot-status" id="bootStatus">INITIALIZING GEOS CORE…</div>
+  </div>
+
   <!-- Top Navigation -->
   <header class="topbar">
     <div class="brand">
@@ -22,6 +41,7 @@
       <div class="ticker" id="ticker"><span class="muted">loading market data…</span></div>
     </div>
     <div class="topbar-right">
+      <div class="threat" id="threat"><span class="t-dot"></span><span class="t-lbl">THREAT</span><b id="threatLvl">—</b></div>
       <button id="demoBtn" class="demo-btn">▶ RUN DEMO</button>
       <div class="sys-status" id="sysStatus"><span class="dot"></span> SYSTEM ONLINE</div>
       <div class="clock" id="clock">--:--:--</div>
