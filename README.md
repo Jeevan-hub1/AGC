@@ -2,6 +2,12 @@
 
 ### National Energy Resilience Operating System
 
+![CI](https://github.com/Jeevan-hub1/AGC/actions/workflows/ci.yml/badge.svg)
+![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)
+![Tests](https://img.shields.io/badge/tests-52%20passing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/response-%3C100ms-00E5FF)
+
 > An **AI-native, autonomous decision-making platform** for India's energy
 > supply chain. PHOENIX fuses a World Energy Knowledge Graph, a Causal
 > Reasoning Engine, a Monte-Carlo war-gaming simulator and a swarm of
@@ -15,7 +21,7 @@
 ## ⚡ The signature moment
 
 Inject a geopolitical shock — *"Strait of Hormuz partial closure"* — and watch
-**8 agents respond with a full national response in under 100 milliseconds**:
+**9 agents respond with a full national response in under 100 milliseconds**:
 
 ```
  EVENT: Strait of Hormuz Partial Closure (14 days)
@@ -167,7 +173,35 @@ python -m geos.cli --list
 python -m geos.cli --black-swan hormuz_partial russia_secondary_sanctions
 
 # 4. tests
-pytest                       # 35 tests, all green
+pytest                       # 52 tests, all green
+```
+
+### 🐳 Run with Docker
+
+```bash
+docker build -t phoenix-geos .
+docker run -p 8000:8000 phoenix-geos
+#   → http://localhost:8000
+```
+
+### 📁 Repository structure
+
+```
+geos/
+  agents/           9-agent swarm + supervisor orchestrator (blackboard)
+  causal/           Structural Causal Model (+ do-calculus)
+  scenario/         Monte-Carlo war-gaming simulator
+  neri/             National Energy Resilience Index
+  knowledge_graph/  World Energy Knowledge Graph (networkx)
+  ml/               Geopolitical Risk Foundation Model + attention GNN
+  optim/            Cournot-Nash procurement game + DP reserve control
+  analytics/        Detection benchmark (vs single-sensor baseline)
+  data/             supply-chain model, event catalog, live market feed
+  api/              FastAPI app + AI Copilot
+  cli.py            terminal scenario runner
+web/                command center SPA + landing + login (3 themes)
+docs/               architecture.svg + pitch deck
+tests/              52 unit / integration / e2e tests
 ```
 
 ---
