@@ -1,0 +1,12 @@
+# Project Phoenix / GEOS - Autonomous Geopolitical Energy Operating System
+# Core runtime dependencies (kept lean so the demo always boots)
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+numpy==2.2.1
+networkx==3.4.2
+python-dateutil==2.9.0.post0
+
+# Optional / dev
+pytest==8.3.4
+httpx==0.28.1

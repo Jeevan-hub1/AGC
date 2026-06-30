@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROJECT PHOENIX · National Energy Resilience OS</title>
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">◆</div>
+      <div>
+        <div class="brand-title">PROJECT <span>PHOENIX</span></div>
+        <div class="brand-sub">National Energy Resilience Operating System</div>
+      </div>
+    </div>
+    <div class="topbar-center">
+      <div class="search"><span>⌕</span><input placeholder="Search corridors, suppliers, scenarios…" /></div>
+    </div>
+    <div class="topbar-right">
+      <div class="sys-status" id="sysStatus"><span class="dot"></span> SYSTEM ONLINE</div>
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="avatar">CMD</div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- Left Sidebar -->
+    <nav class="sidebar">
+      <button class="nav-item active" data-page="executive">📊 Executive Command</button>
+      <button class="nav-item" data-page="map">🌍 Global Energy Map</button>
+      <button class="nav-item" data-page="geopolitical">🛰 Geopolitical Intel</button>
+      <button class="nav-item" data-page="twin">🕸 Supply Chain Twin</button>
+      <button class="nav-item" data-page="scenario">⚡ Scenario Simulator</button>
+      <button class="nav-item" data-page="procurement">🚢 Procurement Orchestrator</button>
+      <button class="nav-item" data-page="reserves">🛢 Strategic Reserves</button>
+      <button class="nav-item" data-page="economic">📈 Economic Impact</button>
+      <button class="nav-item" data-page="copilot">🤖 AI Copilot</button>
+      <button class="nav-item" data-page="blackswan">🦢 Black Swan Generator</button>
+      <div class="nav-foot">v0.1 · GEOS Core<br/>8 agents online</div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="content" id="content">
+      <!-- EXECUTIVE -->
+      <section class="page active" data-page="executive">
+        <div class="page-head">
+          <h1>Executive Command Center</h1>
+          <p class="muted">Real-time national energy resilience posture · India</p>
+        </div>
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">NATIONAL ENERGY RESILIENCE INDEX (NERI)</div>
+            <div class="neri-wrap"><canvas id="neriGauge"></canvas>
+              <div class="neri-center"><div class="neri-val" id="neriVal">--</div><div class="neri-band" id="neriBand">—</div></div>
+            </div>
+            <div class="neri-drivers" id="neriDrivers"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">RESILIENCE COMPONENT BREAKDOWN</div>
+            <canvas id="neriRadar"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- MAP -->
+      <section class="page" data-page="map">
+        <div class="page-head"><h1>Global Energy Intelligence Map</h1>
+          <p class="muted">Suppliers · corridors · refineries · strategic reserves · live risk overlay</p></div>
+        <div class="card no-pad"><div id="map"></div></div>
+        <div class="legend">
+          <span><i class="d sup"></i> Supplier</span>
+          <span><i class="d ref"></i> Refinery</span>
+          <span><i class="d res"></i> Reserve</span>
+          <span><i class="l hi"></i> High-risk corridor</span>
+          <span><i class="l lo"></i> Corridor</span>
+        </div>
+      </section>
+
+      <!-- GEOPOLITICAL -->
+      <section class="page" data-page="geopolitical">
+        <div class="page-head"><h1>Geopolitical Intelligence</h1>
+          <p class="muted">Risk scoring from the geopolitical & sanctions agents</p></div>
+        <div class="kpi-grid" id="geoKpis"></div>
+        <div class="card"><div class="card-title">SUPPLIER STABILITY MATRIX</div>
+          <div id="supplierMatrix" class="matrix"></div></div>
+      </section>
+
+      <!-- TWIN -->
+      <section class="page" data-page="twin">
+        <div class="page-head"><h1>Supply Chain Digital Twin</h1>
+          <p class="muted">Knowledge-graph dependency view · feedstock-at-risk propagation</p></div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">SYSTEMIC VULNERABILITY (single points of failure)</div>
+            <div id="vulnList"></div></div>
+          <div class="card"><div class="card-title">REFINERY FEEDSTOCK-AT-RISK (active scenario)</div>
+            <canvas id="cascadeChart"></canvas></div>
+        </div>
+      </section>
+
+      <!-- SCENARIO -->
+      <section class="page" data-page="scenario">
+        <div class="page-head"><h1>Disruption Scenario Simulator</h1>
+          <p class="muted">Inject a geopolitical shock → the agent swarm responds in &lt;1s</p></div>
+        <div class="inject-bar" id="injectBar"></div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">CAUSAL IMPACT (factual evaluation)</div>
+            <div id="causalPanel" class="causal"></div></div>
+          <div class="card"><div class="card-title">MONTE CARLO — BRENT DISTRIBUTION</div>
+            <canvas id="distChart"></canvas>
+            <div id="distMeta" class="muted small"></div></div>
+        </div>
+        <div class="card"><div class="card-title">⬢ AGENT REASONING FEED</div>
+          <div id="agentFeed" class="feed"></div></div>
+      </section>
+
+      <!-- PROCUREMENT -->
+      <section class="page" data-page="procurement">
+        <div class="page-head"><h1>Autonomous Procurement Orchestrator</h1>
+          <p class="muted">Ranked, executable backfill plan for the active scenario</p></div>
+        <div id="procSummary" class="banner"></div>
+        <div class="card no-pad"><table class="tbl" id="procTable"></table></div>
+      </section>
+
+      <!-- RESERVES -->
+      <section class="page" data-page="reserves">
+        <div class="page-head"><h1>Strategic Petroleum Reserves</h1>
+          <p class="muted">Drawdown optimisation under the active scenario</p></div>
+        <div id="reserveTanks" class="tanks"></div>
+        <div class="card"><div class="card-title">RESERVE AGENT RECOMMENDATIONS</div>
+          <ul id="reserveRecs" class="recs"></ul></div>
+      </section>
+
+      <!-- ECONOMIC -->
+      <section class="page" data-page="economic">
+        <div class="page-head"><h1>Economic Shock Propagation</h1>
+          <p class="muted">Price → fuel → inflation → GDP transmission</p></div>
+        <div class="kpi-grid" id="econKpis"></div>
+        <div class="card"><div class="card-title">TRANSMISSION CHAIN</div>
+          <div id="econChain" class="chain"></div></div>
+      </section>
+
+      <!-- COPILOT -->
+      <section class="page" data-page="copilot">
+        <div class="page-head"><h1>AI Copilot</h1>
+          <p class="muted">Ask the operating system in natural language</p></div>
+        <div class="card chat-card">
+          <div id="chatLog" class="chat-log"></div>
+          <div class="chat-input">
+            <input id="chatInput" placeholder="What happens if Hormuz closes tomorrow?" />
+            <button id="chatSend">Send</button>
+          </div>
+          <div class="suggestions" id="chatSuggest"></div>
+        </div>
+      </section>
+
+      <!-- BLACK SWAN -->
+      <section class="page" data-page="blackswan">
+        <div class="page-head"><h1>Black Swan Generator</h1>
+          <p class="muted">Compound multiple shocks into one unprecedented crisis</p></div>
+        <div class="card"><div class="card-title">SELECT 2+ SHOCKS TO COMPOUND</div>
+          <div id="swanPicker" class="swan-picker"></div>
+          <button id="swanRun" class="btn-primary">⚠ GENERATE BLACK SWAN</button></div>
+        <div id="swanResult"></div>
+      </section>
+    </main>
+
+    <!-- Right rail -->
+    <aside class="rail">
+      <div class="rail-title">⬤ LIVE ALERTS</div>
+      <div id="alerts" class="alerts"></div>
+      <div class="rail-title">⚙ AI RECOMMENDATIONS</div>
+      <div id="railRecs" class="rail-recs"></div>
+    </aside>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

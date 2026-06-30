@@ -1,0 +1,18 @@
+[project]
+name = "geos"
+version = "0.1.0"
+description = "Project Phoenix - Autonomous Geopolitical Energy Operating System (GEOS) for India's energy supply chain resilience"
+requires-python = ">=3.10"
+authors = [{ name = "Team Phoenix" }]
+readme = "README.md"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["geos"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
