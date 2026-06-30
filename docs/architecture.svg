@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="980" viewBox="0 0 1280 980" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#050816"/>
+      <stop offset="100%" stop-color="#0B1020"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#6C63FF"/>
+    </linearGradient>
+    <linearGradient id="action" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00FF9C"/>
+      <stop offset="100%" stop-color="#00E5FF"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#00E5FF"/>
+    </marker>
+    <style>
+      .layer { fill: rgba(255,255,255,0.03); stroke: rgba(255,255,255,0.08); rx: 16; }
+      .ltitle { fill: #94A3B8; font-size: 12px; font-weight: 700; letter-spacing: 2px; }
+      .box { rx: 11; }
+      .bt { fill: #FFFFFF; font-size: 13px; font-weight: 600; }
+      .bs { fill: #94A3B8; font-size: 10.5px; }
+      .flow { stroke: rgba(0,229,255,0.45); stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .agent { fill: rgba(108,99,255,0.12); stroke: rgba(108,99,255,0.5); rx: 10; }
+      .engine { fill: rgba(0,229,255,0.10); stroke: rgba(0,229,255,0.45); rx: 10; }
+      .mlbox { fill: rgba(0,255,156,0.10); stroke: rgba(0,255,156,0.45); rx: 10; }
+      .datab { fill: rgba(255,184,0,0.10); stroke: rgba(255,184,0,0.4); rx: 10; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="980" fill="url(#bg)"/>
+
+  <!-- Header -->
+  <text x="40" y="52" fill="#FFFFFF" font-size="30" font-weight="800" letter-spacing="3">PROJECT <tspan fill="#00E5FF">PHOENIX</tspan></text>
+  <text x="40" y="76" fill="#94A3B8" font-size="14" letter-spacing="1">Geopolitical Energy Operating System (GEOS) — System Architecture</text>
+  <rect x="980" y="32" width="260" height="44" rx="22" fill="rgba(0,255,156,0.06)" stroke="rgba(0,255,156,0.4)"/>
+  <circle cx="1006" cy="54" r="5" fill="#00FF9C" filter="url(#glow)"/>
+  <text x="1020" y="59" fill="#00FF9C" font-size="13" font-weight="700">9 AGENTS · &lt;100ms RESPONSE</text>
+
+  <!-- LAYER 1: Command Center -->
+  <rect class="layer" x="40" y="100" width="1200" height="92"/>
+  <text class="ltitle" x="58" y="124">PRESENTATION · NATIONAL ENERGY COMMAND CENTER</text>
+  <g>
+    <rect class="box" x="58" y="134" width="172" height="44" fill="url(#brand)" opacity="0.85"/>
+    <text class="bt" x="74" y="161" fill="#001018">Executive Command</text>
+    <rect class="box" x="244" y="134" width="150" height="44" fill="url(#brand)" opacity="0.85"/>
+    <text class="bt" x="260" y="161" fill="#001018">Global Map · Twin</text>
+    <rect class="box" x="408" y="134" width="168" height="44" fill="url(#brand)" opacity="0.85"/>
+    <text class="bt" x="424" y="161" fill="#001018">Scenario Simulator</text>
+    <rect class="box" x="590" y="134" width="150" height="44" fill="url(#brand)" opacity="0.85"/>
+    <text class="bt" x="606" y="161" fill="#001018">Procurement</text>
+    <rect class="box" x="754" y="134" width="150" height="44" fill="url(#brand)" opacity="0.85"/>
+    <text class="bt" x="770" y="161" fill="#001018">AI Copilot</text>
+    <rect class="box" x="918" y="134" width="140" height="44" fill="url(#brand)" opacity="0.85"/>
+    <text class="bt" x="934" y="161" fill="#001018">Black Swan</text>
+    <rect class="box" x="1072" y="134" width="150" height="44" fill="url(#brand)" opacity="0.85"/>
+    <text class="bt" x="1088" y="161" fill="#001018">Detection Bench</text>
+  </g>
+
+  <!-- LAYER 2: API -->
+  <rect class="layer" x="40" y="208" width="1200" height="64"/>
+  <text class="ltitle" x="58" y="232">API GATEWAY · FastAPI</text>
+  <text class="bs" x="320" y="248" font-size="12">/scenario · /blackswan · /forecast · /gnn-cascade · /equilibrium · /reserve/optimize · /livefeed · /benchmark · /copilot</text>
+  <rect class="box" x="58" y="240" width="240" height="24" fill="rgba(0,229,255,0.15)" stroke="rgba(0,229,255,0.4)"/>
+  <text class="bt" x="74" y="257" font-size="12">REST · single-process singletons</text>
+
+  <!-- LAYER 3: Supervisor + Agents -->
+  <rect class="layer" x="40" y="288" width="1200" height="190"/>
+  <text class="ltitle" x="58" y="312">MULTI-AGENT INTELLIGENCE · Supervisor Orchestrator (blackboard)</text>
+
+  <!-- pipeline groups -->
+  <text class="bs" x="58" y="338" fill="#6C63FF" font-weight="700">FORESIGHT</text>
+  <rect class="agent" x="58" y="346" width="150" height="50"/>
+  <text class="bt" x="70" y="368">1 · Predictive Risk</text><text class="bs" x="70" y="384">Foundation Model + GNN</text>
+
+  <text class="bs" x="226" y="338" fill="#6C63FF" font-weight="700">INTELLIGENCE</text>
+  <rect class="agent" x="226" y="346" width="132" height="50"/>
+  <text class="bt" x="238" y="368">2 · Geopolitical</text><text class="bs" x="238" y="384">tension · risk</text>
+  <rect class="agent" x="226" y="402" width="132" height="50"/>
+  <text class="bt" x="238" y="424">3 · Maritime</text><text class="bs" x="238" y="440">corridors · reroute</text>
+  <rect class="agent" x="368" y="346" width="124" height="50"/>
+  <text class="bt" x="380" y="368">4 · Sanctions</text><text class="bs" x="380" y="384">exposure</text>
+
+  <text class="bs" x="510" y="338" fill="#6C63FF" font-weight="700">ANALYSIS</text>
+  <rect class="agent" x="510" y="346" width="132" height="50"/>
+  <text class="bt" x="522" y="368">5 · War-Gamer</text><text class="bs" x="522" y="384">Monte Carlo</text>
+  <rect class="agent" x="510" y="402" width="132" height="50"/>
+  <text class="bt" x="522" y="424">6 · Commodity</text><text class="bs" x="522" y="440">price · tail risk</text>
+
+  <text class="bs" x="654" y="338" fill="#00FF9C" font-weight="700">ACTION</text>
+  <rect class="box" x="654" y="346" width="150" height="50" fill="rgba(0,255,156,0.12)" stroke="rgba(0,255,156,0.5)"/>
+  <text class="bt" x="666" y="368">7 · Procurement</text><text class="bs" x="666" y="384">Nash equilibrium</text>
+  <rect class="box" x="654" y="402" width="150" height="50" fill="rgba(0,255,156,0.12)" stroke="rgba(0,255,156,0.5)"/>
+  <text class="bt" x="666" y="424">8 · Reserve</text><text class="bs" x="666" y="440">DP optimal drawdown</text>
+
+  <text class="bs" x="820" y="338" fill="#FFB800" font-weight="700">POLICY</text>
+  <rect class="box" x="820" y="346" width="150" height="106" fill="rgba(255,184,0,0.10)" stroke="rgba(255,184,0,0.5)"/>
+  <text class="bt" x="832" y="392">9 · Generative</text><text class="bt" x="832" y="410">Policy</text><text class="bs" x="832" y="430">prioritised actions</text>
+
+  <!-- NERI readout -->
+  <rect class="box" x="986" y="346" width="236" height="106" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.4)"/>
+  <text class="ltitle" x="1000" y="372" font-size="11">DECISION BRIEF + NERI</text>
+  <text x="1000" y="408" fill="#FFFFFF" font-size="34" font-weight="800">NERI</text>
+  <text x="1000" y="432" fill="#94A3B8" font-size="12">0–100 early-warning · CRITICAL→RESILIENT</text>
+
+  <!-- LAYER 4: Core engines -->
+  <rect class="layer" x="40" y="494" width="588" height="150"/>
+  <text class="ltitle" x="58" y="518">CORE ENGINES</text>
+  <rect class="engine" x="58" y="530" width="262" height="48"/>
+  <text class="bt" x="72" y="550">World Energy Knowledge Graph</text><text class="bs" x="72" y="567">networkx · cascade · vulnerability</text>
+  <rect class="engine" x="334" y="530" width="280" height="48"/>
+  <text class="bt" x="348" y="550">Causal Engine (SCM + do-calculus)</text><text class="bs" x="348" y="567">shortfall→Brent→inflation→GDP</text>
+  <rect class="engine" x="58" y="586" width="262" height="48"/>
+  <text class="bt" x="72" y="606">Monte Carlo War-Gamer</text><text class="bs" x="72" y="623">1000s of futures · Black Swan</text>
+  <rect class="engine" x="334" y="586" width="280" height="48"/>
+  <text class="bt" x="348" y="606">NERI Index</text><text class="bs" x="348" y="623">8 weighted sub-indicators</text>
+
+  <!-- LAYER 4b: Advanced ML / Optimization -->
+  <rect class="layer" x="652" y="494" width="588" height="150"/>
+  <text class="ltitle" x="670" y="518">ADVANCED AI / ML / OPTIMIZATION</text>
+  <rect class="mlbox" x="670" y="530" width="262" height="48"/>
+  <text class="bt" x="684" y="550">Geopolitical Risk Foundation Model</text><text class="bs" x="684" y="567">trained GBM · P(disruption) + lead time</text>
+  <rect class="mlbox" x="946" y="530" width="278" height="48"/>
+  <text class="bt" x="960" y="550">GNN Attention Propagation</text><text class="bs" x="960" y="567">message passing · systemic risk</text>
+  <rect class="mlbox" x="670" y="586" width="262" height="48"/>
+  <text class="bt" x="684" y="606">Cournot–Nash Procurement Game</text><text class="bs" x="684" y="623">endogenous spot pricing</text>
+  <rect class="mlbox" x="946" y="586" width="278" height="48"/>
+  <text class="bt" x="960" y="606">DP Reserve Control + Benchmark</text><text class="bs" x="960" y="623">MDP value iteration · FNR ↓95%</text>
+
+  <!-- LAYER 5: Data -->
+  <rect class="layer" x="40" y="660" width="1200" height="92"/>
+  <text class="ltitle" x="58" y="684">DATA LAYER · streaming + structured</text>
+  <rect class="datab" x="58" y="696" width="200" height="44"/>
+  <text class="bt" x="72" y="716">Live Market Feed</text><text class="bs" x="72" y="732">Brent/WTI/gas/FX · cache+fallback</text>
+  <rect class="datab" x="272" y="696" width="200" height="44"/>
+  <text class="bt" x="286" y="716">Supply-Chain Model</text><text class="bs" x="286" y="732">suppliers·corridors·refineries·SPR</text>
+  <rect class="datab" x="486" y="696" width="200" height="44"/>
+  <text class="bt" x="500" y="716">Event Catalog</text><text class="bs" x="500" y="732">6 shock scenarios + levers</text>
+  <rect class="datab" x="700" y="696" width="220" height="44"/>
+  <text class="bt" x="714" y="716">Roadmap: AIS · GDELT · EIA</text><text class="bs" x="714" y="732">live geopolitical/vessel feeds</text>
+  <rect class="datab" x="934" y="696" width="288" height="44"/>
+  <text class="bt" x="948" y="716">Synthetic training corpus</text><text class="bs" x="948" y="732">documented generative process</text>
+
+  <!-- vertical flow arrows between layers -->
+  <line class="flow" x1="640" y1="192" x2="640" y2="206"/>
+  <line class="flow" x1="640" y1="272" x2="640" y2="286"/>
+  <line class="flow" x1="334" y1="478" x2="334" y2="492"/>
+  <line class="flow" x1="940" y1="478" x2="940" y2="492"/>
+  <line class="flow" x1="334" y1="644" x2="334" y2="658"/>
+  <line class="flow" x1="940" y1="644" x2="940" y2="658"/>
+
+  <!-- footer -->
+  <text x="40" y="792" fill="#94A3B8" font-size="12">Full national response in &lt;100 ms · 52 passing tests · ET AI Hackathon 2026 · Problem #2 — Energy Supply Chain Resilience</text>
+</svg>

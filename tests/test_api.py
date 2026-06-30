@@ -14,12 +14,12 @@ def client():
 def test_health(client):
     r = client.get("/api/health")
     assert r.status_code == 200
-    assert r.json()["agents"] == 8
+    assert r.json()["agents"] == 9
 
 
 def test_events_and_agents(client):
     assert len(client.get("/api/events").json()["events"]) == 6
-    assert len(client.get("/api/agents").json()["roster"]) == 8
+    assert len(client.get("/api/agents").json()["roster"]) == 9
 
 
 def test_worldmodel(client):
@@ -35,7 +35,7 @@ def test_scenario_e2e_hormuz(client):
     d = r.json()
     assert d["neri_after"]["score"] < d["neri_before"]["score"]
     assert d["causal"]["brent_usd"] > 110
-    assert len(d["agent_reports"]) == 8
+    assert len(d["agent_reports"]) == 9
 
 
 def test_scenario_unknown_event_404(client):

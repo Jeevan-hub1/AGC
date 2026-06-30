@@ -5,10 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROJECT PHOENIX · National Energy Resilience OS</title>
   <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
-<body>
+<body class="light">
+  <!-- Animated background -->
+  <canvas id="bgfx"></canvas>
+  <div class="bg-grid"></div>
+
+  <!-- Boot splash -->
+  <div id="boot">
+    <div class="boot-core">
+      <div class="boot-rings"><span></span><span></span><span></span></div>
+      <div class="boot-logo">◆</div>
+    </div>
+    <div class="boot-title">PROJECT <span>PHOENIX</span></div>
+    <div class="boot-sub">National Energy Resilience Operating System</div>
+    <div class="boot-bar"><i></i></div>
+    <div class="boot-status" id="bootStatus">INITIALIZING GEOS CORE…</div>
+  </div>
+
   <!-- Top Navigation -->
   <header class="topbar">
     <div class="brand">
@@ -19,9 +38,16 @@
       </div>
     </div>
     <div class="topbar-center">
-      <div class="search"><span>⌕</span><input placeholder="Search corridors, suppliers, scenarios…" /></div>
+      <div class="ticker" id="ticker"><span class="muted">loading market data…</span></div>
     </div>
     <div class="topbar-right">
+      <div class="theme-seg" id="themeSeg">
+        <button data-theme="light" title="Cool · Tech"><i style="background:#0096C7"></i></button>
+        <button data-theme="exec" title="Executive · Warm"><i style="background:#B8860B"></i></button>
+        <button data-theme="dark" title="Command · Dark"><i style="background:#6C63FF"></i></button>
+      </div>
+      <div class="threat" id="threat"><span class="t-dot"></span><span class="t-lbl">THREAT</span><b id="threatLvl">—</b></div>
+      <button id="demoBtn" class="demo-btn">▶ RUN DEMO</button>
       <div class="sys-status" id="sysStatus"><span class="dot"></span> SYSTEM ONLINE</div>
       <div class="clock" id="clock">--:--:--</div>
       <div class="avatar">CMD</div>
@@ -41,7 +67,8 @@
       <button class="nav-item" data-page="economic">📈 Economic Impact</button>
       <button class="nav-item" data-page="copilot">🤖 AI Copilot</button>
       <button class="nav-item" data-page="blackswan">🦢 Black Swan Generator</button>
-      <div class="nav-foot">v0.1 · GEOS Core<br/>8 agents online</div>
+      <button class="nav-item" data-page="benchmark">🎯 Detection Benchmark</button>
+      <div class="nav-foot">v0.2 · GEOS Core<br/>9 agents online</div>
     </nav>
 
     <!-- Main content -->
@@ -87,6 +114,9 @@
         <div class="page-head"><h1>Geopolitical Intelligence</h1>
           <p class="muted">Risk scoring from the geopolitical & sanctions agents</p></div>
         <div class="kpi-grid" id="geoKpis"></div>
+        <div class="card"><div class="card-title">🔮 PREDICTIVE CORRIDOR FORECAST — Foundation Model <span id="aucBadge" class="badge"></span></div>
+          <div class="muted small" style="margin-bottom:10px">Trained gradient-boosted model: P(disruption) + lead time per corridor</div>
+          <table class="tbl" id="forecastTable"></table></div>
         <div class="card"><div class="card-title">SUPPLIER STABILITY MATRIX</div>
           <div id="supplierMatrix" class="matrix"></div></div>
       </section>
@@ -101,6 +131,9 @@
           <div class="card"><div class="card-title">REFINERY FEEDSTOCK-AT-RISK (active scenario)</div>
             <canvas id="cascadeChart"></canvas></div>
         </div>
+        <div class="card"><div class="card-title">🕸 GNN ATTENTION RISK PROPAGATION <span class="badge" id="gnnBadge"></span></div>
+          <div class="muted small" style="margin-bottom:10px">3-layer message-passing — risk concentration across the network</div>
+          <div id="gnnRanking" class="matrix"></div></div>
       </section>
 
       <!-- SCENARIO -->
@@ -132,6 +165,9 @@
         <div class="page-head"><h1>Strategic Petroleum Reserves</h1>
           <p class="muted">Drawdown optimisation under the active scenario</p></div>
         <div id="reserveTanks" class="tanks"></div>
+        <div class="card"><div class="card-title">📉 DP-OPTIMAL DRAWDOWN SCHEDULE (finite-horizon MDP)</div>
+          <canvas id="dpChart"></canvas>
+          <div id="dpMeta" class="muted small"></div></div>
         <div class="card"><div class="card-title">RESERVE AGENT RECOMMENDATIONS</div>
           <ul id="reserveRecs" class="recs"></ul></div>
       </section>
@@ -168,6 +204,31 @@
           <button id="swanRun" class="btn-primary">⚠ GENERATE BLACK SWAN</button></div>
         <div id="swanResult"></div>
       </section>
+      <!-- BENCHMARK -->
+      <section class="page" data-page="benchmark">
+        <div class="page-head"><h1>Detection Benchmark</h1>
+          <p class="muted">PHOENIX compound multi-signal detection vs a single-sensor baseline — the metric that saves lives</p></div>
+        <div class="inject-bar">
+          <button class="chip active" id="benchRun">▶ Run benchmark (600 episodes)</button>
+          <span class="muted small" id="benchStatus" style="align-self:center"></span>
+        </div>
+        <div id="benchSummary" class="banner"></div>
+        <div class="kpi-grid" id="benchKpis"></div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">📉 FALSE-NEGATIVE RATE (lower is better)</div>
+            <canvas id="fnrChart"></canvas></div>
+          <div class="card"><div class="card-title">⏱ DETECTION LEAD TIME (days before onset)</div>
+            <canvas id="leadChart"></canvas></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">CONFUSION MATRICES</div>
+            <div id="confusion" class="confusion"></div></div>
+          <div class="card"><div class="card-title">EXAMPLE EPISODE — why the baseline misses it</div>
+            <canvas id="episodeChart"></canvas>
+            <div id="episodeMeta" class="muted small"></div></div>
+        </div>
+      </section>
+
     </main>
 
     <!-- Right rail -->

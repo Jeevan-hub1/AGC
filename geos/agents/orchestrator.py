@@ -25,6 +25,7 @@ from geos.agents.commodity_agent import CommodityAgent
 from geos.agents.geopolitical_agent import GeopoliticalAgent
 from geos.agents.maritime_agent import MaritimeAgent
 from geos.agents.policy_agent import PolicyAgent
+from geos.agents.predictive_agent import PredictiveRiskAgent
 from geos.agents.procurement_agent import ProcurementAgent
 from geos.agents.reserve_agent import ReserveAgent
 from geos.agents.sanctions_agent import SanctionsAgent
@@ -36,12 +37,15 @@ from geos.neri import NERICalculator
 
 
 class SupervisorOrchestrator:
-    def __init__(self, sim_runs: int = config.DEFAULT_SIM_RUNS) -> None:
+    def __init__(self, sim_runs: int = config.DEFAULT_SIM_RUNS,
+                 baseline_brent: float | None = None) -> None:
         self.graph = build_world_graph()
-        self.causal = CausalEngine()
-        self.neri = NERICalculator()
+        self.causal = CausalEngine(baseline_brent=baseline_brent)
+        self.neri = NERICalculator(baseline_brent=baseline_brent)
+        self.baseline_brent = baseline_brent
         # ordered pipeline (dependency-respecting)
         self.pipeline = [
+            PredictiveRiskAgent(),
             GeopoliticalAgent(),
             MaritimeAgent(),
             SanctionsAgent(),
@@ -79,7 +83,7 @@ class SupervisorOrchestrator:
         })
 
         if sim_runs is not None:
-            self.pipeline[3] = ScenarioAgent(runs=sim_runs)
+            self.pipeline[4] = ScenarioAgent(runs=sim_runs)
 
         reports = [agent.run(board) for agent in self.pipeline]
         elapsed = (time.perf_counter() - start) * 1000
