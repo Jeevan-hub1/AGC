@@ -46,6 +46,11 @@ treats those structural facts as live, modellable state.
 
 ## 🏗️ Architecture
 
+![PHOENIX Architecture](docs/architecture.svg)
+
+> Full architecture diagram: [`docs/architecture.svg`](docs/architecture.svg) ·
+> Pitch deck outline + speaker notes: [`docs/PITCH_DECK.md`](docs/PITCH_DECK.md)
+
 ```
                          ┌──────────────────────────────┐
                          │   COMMAND CENTER (web SPA)    │
